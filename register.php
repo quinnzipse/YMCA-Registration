@@ -14,11 +14,11 @@
                         <div class="p-4">
                             <h2 class="lead" style="font-size:2rem">Register</h2>
                             <hr>
-                            <form class="mt-4">
+                            <form class="mt-4" action="service/register.php" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-6 form-group">
                                         <label class="form-label" for="firstNameInput">First Name</label>
-                                        <input type="text" name="firstName" id="firstNameInput" class="form-control"
+                                        <input type="text" name="firstName" id="firstNameInput" maxlength="20" class="form-control"
                                                required>
                                     </div>
                                     <div class="col-6 form-group">
