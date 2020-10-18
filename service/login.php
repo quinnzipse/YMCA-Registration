@@ -35,10 +35,9 @@ if ($result) {
         if (password_verify($_REQUEST['password'], $user->Password)) {
             // Create a UUID to associate with the user.
             $uuid = Auth::CreateUUID();
-            $hashed_uuid = password_hash($uuid, PASSWORD_BCRYPT);
 
             // Put the hashed version in the database
-            $sql = "INSERT INTO Authenticated_Users (userID, uuid) VALUES ('$user->ID', '$hashed_uuid');";
+            $sql = "INSERT INTO Authenticated_Users (userID, uuid) VALUES ('$user->ID', '$uuid');";
             $result = mysqli_query($mysql->conn, $sql);
 
             if (!$result) {

@@ -25,7 +25,13 @@
                             echo '<p class="text-danger mt-2 mb-0">' .
                                 '<small>Invalid Username/Password. Please try Again.</small></p>';
                         }
+                        // If the server returns the error code for reauth, display message.
+                        if ($_REQUEST['reauth'] == '1') {
+                            echo '<p class="text-danger mt-2 mb-0">' .
+                                '<small>Please sign in before continuing.</small></p>';
+                        }
                         ?>
+
                         <button class="btn btn-primary mt-3">Login</button>
                     </form>
                 </div>

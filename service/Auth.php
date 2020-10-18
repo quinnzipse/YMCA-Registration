@@ -4,7 +4,7 @@ require_once "MySQLConnection.php";
 class Auth
 {
 
-    private $mysql;
+    private MySQLConnection $mysql;
 
     public function __construct()
     {
@@ -39,6 +39,22 @@ class Auth
 
             // 48 bits for "node"
             mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+    }
+
+    /**
+     * Wipes out the uuid cookie if there is one.
+     * Redirects you to the login page with a referer cookie.
+     */
+    static function reauth()
+    {
+        // Revoke the clients UUID since it is invalid.
+        setcookie('cs341_uuid', '', 1);
+
+        // Remember where it came from.
+        setcookie('login_referer', $_SERVER['HTTP_REFERER'], 0, '/');
+
+        // Send the to the login screen with a custom message.
+        header('Location: /login.php?reauth=1');
     }
 
     /**
@@ -83,7 +99,6 @@ class Auth
     function revokeAccess(array $uuids): bool
     {
         $uuids = join("', '", $uuids);
-        var_dump($uuids);
         $sql = "DELETE FROM Authenticated_Users WHERE uuid IN ('$uuids')";
 
         return mysqli_query($this->mysql->conn, $sql);
@@ -97,7 +112,8 @@ class Auth
      */
     function getCurrentUser(string $uuid): object
     {
-        $sql = "SELECT * FROM Participants WHERE ID = (SELECT userID FROM Authenticated_Users WHERE uuid = '$uuid')";
+        $sql = "SELECT userID, Email, FirstName, LastName, MembershipStatus FROM Authenticated_Users INNER JOIN Participants ON ID = userID WHERE uuid = '$uuid';";
+
         $result = mysqli_query($this->mysql->conn, $sql);
 
         if ($result && $result->num_rows == 1) {
@@ -105,5 +121,50 @@ class Auth
         }
 
         return false;
+    }
+
+    /**
+     * Authorizes the current user based on the cs341_uuid cookie.
+     *
+     * If user is signed in, a user object will be returned.
+     * Otherwise, the user will be redirected to sign-in.
+     *
+     * @return object Logged in user.
+     */
+    function authorize(): object
+    {
+        $uuid = $_COOKIE['cs341_uuid'];
+        // Helps mitigate SQL injection.
+        if (!$uuid || strlen($uuid) != 36) {
+            self::reauth();
+            http_send_status(400);
+            exit(400);
+        } else {
+            // Use the UUID to get the user.
+            $user = $this->getCurrentUser($uuid);
+
+            if (!$user) {
+                self::reauth();
+                http_send_status(400);
+                exit(400);
+            }
+        }
+
+        return $user;
+    }
+
+    /**
+     * Logs the user out, wiping out their uuid cookie and revoking the uuid.
+     *
+     * @param string $uuid The UUID to revoke.
+     * @return bool true on success, false on failure.
+     */
+    function logout(string $uuid): bool
+    {
+        // Erase the uuid client cookie.
+        setcookie('cs341_uuid', '', 1);
+
+        // Revoke UUID.
+        return $this->revokeAccess(array($uuid));
     }
 }
