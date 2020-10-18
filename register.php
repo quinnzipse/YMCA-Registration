@@ -33,7 +33,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form class="mt-4" action="service/register.php" enctype="multipart/form-data">
+                            <form class="mt-4" action="service/register.php" enctype="multipart/form-data" method="post">
                                 <div class="row">
                                     <div class="col-6 form-group">
                                         <label class="form-label" for="firstNameInput">First Name</label>
