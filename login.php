@@ -17,7 +17,8 @@
                                class="form-control" value="<?php echo $_COOKIE['email'] ?? '' ?>" required>
                         <label class="form-label mt-2" for="password_input">Password</label>
                         <input type="password" name="password" id="password_input"
-                               class="form-control" required>
+                               class="form-control <?php echo $_REQUEST['failed'] == '1' ? 'is-invalid' : '' ?>"
+                               required>
                         <?php
                         // If the server returns the error code for wrong password, display message.
                         if ($_REQUEST['failed'] == '1') {

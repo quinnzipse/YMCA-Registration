@@ -43,14 +43,14 @@ if ($result) {
 
             if (!$result) {
                 // The uuid insert didn't work...
-                $error = mysqli_error($mysql->conn);
-                var_dump("Problem with authentication! $error");
+                $error = json_encode(mysqli_error($mysql->conn));\
+                header("Location: /login.php?failed=3&reason=$error");
 
                 http_send_status(500);
                 exit(500);
             } else {
                 // Give the uuid to the web browser as a cookie for 5 minutes.
-                setcookie("cs341_uuid", $uuid, array('expires' => time() + 350, 'path' => '/', 'httponly' => true));
+                setcookie("cs341_uuid", $uuid, array('expires' => time() + 700, 'path' => '/', 'httponly' => true));
             }
 
         } else {
@@ -71,5 +71,5 @@ if ($result) {
     exit(500);
 }
 
-header("Location: /index.php?loggedIn=1");
+header("Location: /?loggedIn=1");
 exit(200);
