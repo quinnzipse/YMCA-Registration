@@ -112,12 +112,19 @@ class Auth
      */
     function getCurrentUser(string $uuid): object
     {
-        $sql = "SELECT userID, Email, FirstName, LastName, MembershipStatus FROM Authenticated_Users INNER JOIN Participants ON ID = userID WHERE uuid = '$uuid';";
+        $sql = "SELECT * FROM 
+              (SELECT userID, Email, FirstName, LastName, MembershipStatus 
+              FROM Authenticated_Users INNER JOIN Participants 
+                  ON ID = userID WHERE uuid = '$uuid') as User LEFT JOIN Staff ON userID = ID;";
 
         $result = mysqli_query($this->mysql->conn, $sql);
 
         if ($result && $result->num_rows == 1) {
-            return mysqli_fetch_object($result);
+
+            $user = mysqli_fetch_object($result);
+            $user->isStaff = $user->MembershipStatus === 3 && !is_null($user->SSN);
+
+            return $user;
         }
 
         return false;
@@ -129,7 +136,7 @@ class Auth
      * If user is signed in, a user object will be returned.
      * Otherwise, the user will be redirected to sign-in.
      *
-     * @return object Logged in user.
+     * @return object Logged in user. Sends HTTP 400 error or failure.
      */
     function authorize(): object
     {
@@ -151,6 +158,32 @@ class Auth
         }
 
         return $user;
+    }
+
+    /**
+     * Checks to see whether a user is logged in.
+     * For more information about the user logged in @see authorize()
+     * This function will not redirect the user to login.
+     *
+     * @return bool True when user is logged in, false otherwise.
+     */
+    function isLoggedIn(): bool
+    {
+        $uuid = $_COOKIE['cs341_uuid'];
+
+        if ($uuid && strlen($uuid) === 36) {
+
+            $uuid = mysqli_real_escape_string($this->mysql->conn, $uuid);
+
+            $sql = "SELECT userID FROM Authenticated_Users INNER JOIN Participants
+                  ON ID = userID WHERE uuid = '$uuid';";
+
+            $result = mysqli_query($this->mysql->conn, $sql);
+
+            return $result && $result->num_rows == 1;
+        }
+
+        return false;
     }
 
     /**
