@@ -42,7 +42,7 @@ if ($result) {
 
             if (!$result) {
                 // The uuid insert didn't work...
-                $error = json_encode(mysqli_error($mysql->conn));\
+                $error = json_encode(mysqli_error($mysql->conn));
                 header("Location: /login.php?failed=3&reason=$error");
 
                 http_send_status(500);
@@ -50,6 +50,12 @@ if ($result) {
             } else {
                 // Give the uuid to the web browser as a cookie for 5 minutes.
                 setcookie("cs341_uuid", $uuid, array('expires' => time() + 700, 'path' => '/', 'httponly' => true));
+                $location = ($_COOKIE['login_referer'] ?? '/?loggedIn=1');
+                setcookie('login_referer', '', array('expires' => time() - 700, 'path' => '/', 'httponly' => true));
+
+                header("Location: $location");
+
+                exit(200);
             }
 
         } else {
@@ -69,6 +75,3 @@ if ($result) {
     http_send_status(500);
     exit(500);
 }
-
-header("Location: /?loggedIn=1");
-exit(200);
