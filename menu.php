@@ -17,7 +17,6 @@ $user = $auth->isLoggedIn();
                 echo "  <a class='nav-link' href='$host/'>Home</a>
                         <a class='nav-link' href='$host/program/'>Programs</a>";
                         if ($user) {
-                            var_dump($user->MembershipStatus);
                             if ($user->MembershipStatus == 3) {
                                 echo "<a class='nav-link' href='$host/staff/'>Staff</a>";
                             }  
