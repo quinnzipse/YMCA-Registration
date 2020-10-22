@@ -14,7 +14,7 @@ $user = $auth->isLoggedIn();
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <?php $host = ($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
-                echo "  <a class='nav-link' href='$host/'>Home</a>
+                echo "  <a class='nav-link' href='$host/index.php'>Home</a>
                         <a class='nav-link' href='$host/program/index.php'>Programs</a>";
                         if ($user) {
                             if ($user->MembershipStatus == 3) {
