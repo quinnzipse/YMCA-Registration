@@ -2,11 +2,6 @@
 require_once './service/Auth.php';
 $auth = new Auth();
 $user = $auth->isLoggedIn();
-if ($user) {
-    var_dump($user);
-} else {
-    // User is not logged in
-}
 ?>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -19,11 +14,12 @@ if ($user) {
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <?php $host = ($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
-                echo "  <a class='nav-link' href='$host/index.php'>Home</a>
-                        <a class='nav-link' href='$host/program/index.php'>Programs</a>";
+                echo "  <a class='nav-link' href='$host/'>Home</a>
+                        <a class='nav-link' href='$host/program/'>Programs</a>";
                         if ($user) {
+
                             if ($user->membershipStatus == 3) {
-                                echo "<a class='nav-link' href='$host/staff/index.php'>Staff</a>";
+                                echo "<a class='nav-link' href='$host/staff/'>Staff</a>";
                             }  
                             echo "<a class='nav-link' href='$host/logout.php'>Logout</a>";
                         } else {
