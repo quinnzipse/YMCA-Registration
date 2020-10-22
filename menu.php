@@ -7,8 +7,8 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <?php $host = $_SERVER['HTTP_HOST'];
-            echo '<a class="nav-link" href="http://' . $host . '/index.php">Home</a>';
+            <?php $host = ($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
+            echo "<a class='nav-link' href='$host/index.php'>Home</a>";
             echo '<a class="nav-link" href="http://' . $host . '/program/index.php">Programs</a>';
             echo '<!--<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->';
             echo '<a class="nav-link" href="login.php">Login</a>';
