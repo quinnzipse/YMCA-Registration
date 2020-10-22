@@ -1,11 +1,24 @@
 <?php
 require_once "MySQLConnection.php";
 
+/**
+ * Class Auth
+ *
+ * Class for helpful authorization methods.
+ */
 class Auth
 {
-
+    /**
+     * The MySQLConnection to use.
+     * For more info @see MySQLConnection
+     *
+     * @var MySQLConnection mysql
+     */
     private MySQLConnection $mysql;
 
+    /**
+     * Auth constructor.
+     */
     public function __construct()
     {
         $this->mysql = new MySQLConnection();
@@ -51,7 +64,7 @@ class Auth
         setcookie('cs341_uuid', '', 1);
 
         // Remember where it came from.
-        setcookie('login_referer', $_SERVER['HTTP_REFERER'], 0, '/');
+        setcookie('login_referer', $_SERVER['REQUEST_URI'], 0, '/login.php');
 
         // Send the to the login screen with a custom message.
         header('Location: /login.php?reauth=1');
