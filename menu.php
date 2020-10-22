@@ -1,6 +1,6 @@
 <?php
 $host = ($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
-require_once  "$host . '/service/Auth.php'";
+require_once  $host . '/service/Auth.php';
 $auth = new Auth();
 $user = $auth->isLoggedIn();
 ?>
