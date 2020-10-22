@@ -1,47 +1,18 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-<style>
-
-    .navigBar {
-        width: 75%;
-        margin: auto;
-        background-color: #177CFF;
-        overflow: hidden;
-    }
-
-    .navigBar a {
-        float: left;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 12px 14px;
-        text-decoration: none;
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    .navigBar a:hover {
-        background-color: #ddd;
-        color: black;
-    }
-
-    .navigBar a.YMCA {
-        font-size: 40px;
-        padding: 0 35px;
-        background-color: black;
-        color: white;
-    }
-
-    .navigBar a.log {
-        float: right;
-    }
-
-</style>
-
-<div class="navigBar">
-    <a class="YMCA">YMCA</a>
-    <a href="index.php">Home</a>
-    <a href="program/index.php">Programs</a>
-    <a href="staff/index.php">Staff</a>
-    <a class="log" href="login.php">Login</a>
-</div>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #47b3ff;">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#">Features</a>
+            <a class="nav-link" href="#">Pricing</a>
+            <!--<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
+            <a class="nav-link" href="login.php" style="float: right">Login</a>
+        </div>
+    </div>
+</nav>
 
