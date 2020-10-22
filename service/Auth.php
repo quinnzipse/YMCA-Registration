@@ -175,6 +175,29 @@ class Auth
     }
 
     /**
+     * Authorizes the current user based on the cs341_uuid cookie.
+     *
+     * @return object|false
+     */
+    function authorizeStaff(): object
+    {
+        $uuid = $_COOKIE['cs341_uuid'];
+        // Helps mitigate SQL injection.
+        if (!$uuid || strlen($uuid) != 36) {
+            return false;
+        } else {
+            // Use the UUID to get the user.
+            $user = $this->getCurrentUser($uuid);
+
+            if ($user && $user->isStaff) {
+                return $user;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Refreshes a uuid to prevent it from being wiped by cron task
      *
      * @see validateSessions()
