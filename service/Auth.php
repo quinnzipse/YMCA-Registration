@@ -64,7 +64,7 @@ class Auth
         setcookie('cs341_uuid', '', 1);
 
         // Remember where it came from.
-        setcookie('login_referer', $_SERVER['REQUEST_URI'], 0, '/login.php');
+        setcookie('login_referer', $_SERVER['REQUEST_URI'], 0, '/');
 
         // Send the to the login screen with a custom message.
         header('Location: /login.php?reauth=1');
@@ -135,7 +135,8 @@ class Auth
         if ($result && $result->num_rows == 1) {
 
             $user = mysqli_fetch_object($result);
-            $user->isStaff = $user->MembershipStatus === 3 && !is_null($user->SSN);
+            $user->isStaff = $user->MembershipStatus == 3 && !is_null($user->SSN);
+            $this->refreshToken($uuid);
 
             return $user;
         }
@@ -174,13 +175,29 @@ class Auth
     }
 
     /**
-     * Checks to see whether a user is logged in.
-     * For more information about the user logged in @see authorize()
-     * This function will not redirect the user to login.
+     * Refreshes a uuid to prevent it from being wiped by cron task
      *
-     * @return bool True when user is logged in, false otherwise.
+     * @see validateSessions()
+     *
+     * @param string $uuid what uuid should we refresh?
+     * @return bool true on success, false on failure
      */
-    function isLoggedIn(): bool
+    function refreshToken(string $uuid): bool
+    {
+        $result = mysqli_query($this->mysql->conn, "UPDATE Authenticated_Users SET modified_at = CURRENT_TIME WHERE uuid = '$uuid'");
+
+        return $result != false;
+    }
+
+    /**
+     * Checks to see whether a user is logged in.
+     *
+     * This function will not redirect the user to login. To redirect a user if they aren't authorized
+     *
+     * @return bool|object|stdClass If the user is logged in, it will return the user, otherwise false.
+     * @see authorize()
+     */
+    function isLoggedIn()
     {
         $uuid = $_COOKIE['cs341_uuid'];
 
@@ -188,12 +205,7 @@ class Auth
 
             $uuid = mysqli_real_escape_string($this->mysql->conn, $uuid);
 
-            $sql = "SELECT userID FROM Authenticated_Users INNER JOIN Participants
-                  ON ID = userID WHERE uuid = '$uuid';";
-
-            $result = mysqli_query($this->mysql->conn, $sql);
-
-            return $result && $result->num_rows == 1;
+            return $this->getCurrentUser($uuid);
         }
 
         return false;
@@ -208,7 +220,7 @@ class Auth
     function logout(string $uuid): bool
     {
         // Erase the uuid client cookie.
-        setcookie('cs341_uuid', '', 1);
+        setcookie('cs341_uuid', '', 10);
 
         // Revoke UUID.
         return $this->revokeAccess(array($uuid));
