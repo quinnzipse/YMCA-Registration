@@ -7,11 +7,12 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <?php $host = ($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];?>
-                <a class='nav-link' href='$host/index.php'>Home</a>
-                <a class='nav-link' href='$host/program/index.php'>Programs</a>
-                <a class='nav-link' href='$host/staff/index.php'>Staff</a>
-                <a class='nav-link' href='$host/login.php'>Login</a>
+            <?php $host = ($_SERVER['HTTPS'] ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
+                echo "  <a class='nav-link' href='$host/index.php'>Home</a>
+                        <a class='nav-link' href='$host/program/index.php'>Programs</a>
+                        <a class='nav-link' href='$host/staff/index.php'>Staff</a>
+                        <a class='nav-link' href='$host/login.php'>Login</a>";
+            ?>
         </div>
     </div>
 </nav>
