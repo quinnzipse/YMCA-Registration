@@ -7,11 +7,12 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-link" href="#">Features</a>
-            <a class="nav-link" href="#">Pricing</a>
-            <!--<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
-            <a class="nav-link" href="login.php" style="float: right">Login</a>
+            <?php $host = $_SERVER['HTTP_HOST'];
+            echo '<a class="nav-link" href="http://' . $host . '/index.php">Home</a>';
+            echo '<a class="nav-link" href="http://' . $host . '/program/index.php">Programs</a>';
+            echo '<!--<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->';
+            echo '<a class="nav-link" href="login.php">Login</a>';
+            ?>
         </div>
     </div>
 </nav>
