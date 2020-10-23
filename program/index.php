@@ -1,118 +1,39 @@
-<?php include '../menu.php'; ?>
-
-
+<?php include '../menu.php';?>
 
 <div class="container">
-    <div style="padding: 30px"></div>
-    <div class="row">
-        <div class="col">
-            <div class="card border-dark" style="width: 18rem; border-radius: 20px">
-                <div class="card-body">
-                    <h5 class="card-title">Weight Lifting</h5>
-                    <p class="card-text">Cut my life into pieces
-                        This is my last resort
-                        Suffocation
-                        No breathing
-                        Don't give a fuck if I cut my arm bleeding</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Where</li>
-                    <li class="list-group-item">When</li>
-                    <li class="list-group-item">Fee</li>
-                </ul>
-                <div class="card-body">
-                    <a href="#" class="btn btn-block" style="background-color: #0851c7; color: white ">Register For Class</a>
+<div class="row mt-3">
+<?php
+require "../service/Program.php";
+$prog = new Program();
+$progs = $prog->getPrograms();
 
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Weight Lifting</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
-                <div class="card-body">
-                    <a href="#" class="card-link">Card link</a>
-
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Weight Lifting</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
-                <div class="card-body">
-                    <a href="#" class="card-link">Card link</a>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div style="padding: 30px"></div>
-    <div class="row">
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Weight Lifting</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
-                <div class="card-body">
-                    <a href="#" class="card-link">Card link</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Weight Lifting</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
-                <div class="card-body">
-                    <a href="#" class="card-link">Card link</a>
-
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Weight Lifting</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
-                <div class="card-body">
-                    <a href="#" class="card-link">Card link</a>
-                </div>
-            </div>
-        </div>
-    </div>
+foreach($progs as $obj) {
 
 
+
+    echo "<div class='col-4'>
+            <div class='card border-dark' style='border-radius: 20px'>
+                <div class='card-body'>
+                    <h5 class='card-title'>$obj->Name</h5>
+                    <p class='card-text'>$obj->ShortDesc</p>
+                </div>
+                <p class='list-group list-group-flush'>
+                    <li class='list-group-item'>$obj->Location</li>
+                    <li class='list-group-item'><p>$obj->start_date to $obj->end_date</p><p> $obj->day_of_week, $obj->start_time - $obj->end_time</p></li>
+                    <li class='list-group-item'><p>Member Fee:   $obj->MemberFee</p> <p>Non Member Fee:   $obj->NonMemberFee</p></li>
+                </ul>
+                <div class='card-body'>
+                    if ($auth) {
+                        <a href='' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>
+                    } else {
+                        <a href='../login.php' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>
+                    }
+
+                </div>
+             </div>
+                
+         </div>";
+} ?>
 </div>
+</div>
+
