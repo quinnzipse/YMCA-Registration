@@ -6,19 +6,22 @@
     <div style="padding: 30px"></div>
     <div class="row">
         <div class="col">
-            <div class="card" style="width: 18rem;">
+            <div class="card border-dark" style="width: 18rem; border-radius: 20px">
                 <div class="card-body">
                     <h5 class="card-title">Weight Lifting</h5>
-                    <p class="card-text">Description</p>
+                    <p class="card-text">Cut my life into pieces
+                        This is my last resort
+                        Suffocation
+                        No breathing
+                        Don't give a fuck if I cut my arm bleeding</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Where</li>
                     <li class="list-group-item">When</li>
-                    <li class="list-group-item">Experience Level</li>
                     <li class="list-group-item">Fee</li>
                 </ul>
                 <div class="card-body">
-                    <a href="#" class="card-link">Register For Class</a>
+                    <a href="#" class="btn btn-block" style="background-color: #0851c7; color: white ">Register For Class</a>
 
                 </div>
             </div>
