@@ -9,7 +9,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2">
-                <form action="../service/addProgram.php" class="mt-3" method="post">
+                <form action="../service/addProgram.php" class="mt-2" method="post">
                     <br>
                     <h2 class="font-weight-light mt-4">Add a Program</h2>
                     <hr>

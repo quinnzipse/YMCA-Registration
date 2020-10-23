@@ -19,7 +19,7 @@
             $etime = date_create($obj->end_time)->format('g:i A');
 
             echo "<div class='col-4'>
-            <div class='card border-dark' style='border-radius: 20px'>
+            <div class='card border-dark h-100' style='border-radius: 20px'>
                 <div class='card-body'>
                     <h5 class='card-title'>$obj->Name</h5>
                     <p class='card-text'>$obj->ShortDesc</p>
