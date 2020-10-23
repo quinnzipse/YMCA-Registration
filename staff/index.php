@@ -1,5 +1,5 @@
 <?php
-include_once "../service/authorize.php";
+include_once "authorize.php";
 ?>
 <html lang="en">
 <head>

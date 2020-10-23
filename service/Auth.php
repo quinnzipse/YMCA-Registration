@@ -123,7 +123,7 @@ class Auth
      * @param string $uuid UUID of the user. Usually provided by the clients cookies.
      * @return object|false Associative array of user credentials. False on failure.
      */
-    function getCurrentUser(string $uuid): object
+    function getCurrentUser(string $uuid)
     {
         $sql = "SELECT * FROM 
               (SELECT userID, Email, FirstName, LastName, MembershipStatus 
@@ -179,7 +179,7 @@ class Auth
      *
      * @return object|false
      */
-    function authorizeStaff(): object
+    function authorizeStaff()
     {
         $uuid = $_COOKIE['cs341_uuid'];
         // Helps mitigate SQL injection.
@@ -207,6 +207,7 @@ class Auth
      */
     function refreshToken(string $uuid): bool
     {
+        setcookie("cs341_uuid", $uuid, array('expires' => time() + 700, 'path' => '/', 'httponly' => true));
         $result = mysqli_query($this->mysql->conn, "UPDATE Authenticated_Users SET modified_at = CURRENT_TIME WHERE uuid = '$uuid'");
 
         return $result != false;
