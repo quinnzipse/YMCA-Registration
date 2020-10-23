@@ -33,7 +33,10 @@
                         }
                         ?>
 
-                        <button class="btn btn-primary mt-3">Login</button>
+                        <div class="d-flex mt-3">
+                            <button class="btn btn-primary">Login</button>
+                            <small class="my-auto ml-3">New? <a href="register.php">Register</a> now!</small>
+                        </div>
                     </form>
                 </div>
             </div>
