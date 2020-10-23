@@ -25,7 +25,8 @@ $user = $auth->isLoggedIn();
                             if ($user->MembershipStatus == 3) {
                                 echo "<a class='nav-link' href='$host/staff/index.php'>Staff</a>";
                             }  
-                            echo "<a class='nav-link' href='$host/logout.php'>Logout</a>";
+                        echo "<a class='nav-link' href=='$host/accountinfo.php'>Account Info</a>";    	
+			echo "<a class='nav-link' href='$host/logout.php'>Logout</a>";
                         } else {
                             echo "<a class='nav-link' href='$host/login.php'>Login</a>";
                         }
