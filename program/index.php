@@ -1,18 +1,20 @@
+<html lang="en">
+<head>
+    <title>Browse Programs</title>
+</head>
 <?php include '../menu.php';
-           ?>
-
+?>
 <div class="container">
-<div class="row mt-3">
-<?php
-require "../service/Program.php";
-$prog = new Program();
-$progs = $prog->getPrograms();
+    <div class="row mt-3">
+        <?php
+        require "../service/Program.php";
+        $prog = new Program();
+        $progs = $prog->getPrograms();
 
-foreach($progs as $obj) {
+        foreach ($progs as $obj) {
 
 
-
-    echo "<div class='col-4'>
+            echo "<div class='col-4'>
             <div class='card border-dark' style='border-radius: 20px'>
                 <div class='card-body'>
                     <h5 class='card-title'>$obj->Name</h5>
@@ -24,17 +26,18 @@ foreach($progs as $obj) {
                     <li class='list-group-item'><p>Member Fee:   $obj->MemberFee</p> <p>Non Member Fee:   $obj->NonMemberFee</p></li>
                 </ul>
                 <div class='card-body'>";
-                    if ($auth->isLoggedIn()) {
-                        echo "<a href='#' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
-                    } else {
-                        echo "<a href='../login.php' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
-                    }
-                echo "
+            if ($auth->isLoggedIn()) {
+                echo "<a href='#' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
+            } else {
+                echo "<a href='../login.php' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
+            }
+            echo "
                 </div>
              </div>
                 
          </div>";
-} ?>
+        } ?>
+    </div>
 </div>
-</div>
+</html>
 
