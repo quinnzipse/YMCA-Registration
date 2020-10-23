@@ -13,6 +13,10 @@
 
         foreach ($progs as $obj) {
 
+            $sdate = date_create($obj->start_date)->format("M, d Y");
+            $edate = date_create($obj->end_date)->format("M, d Y");
+            $stime = date_create($obj->start_time)->format('g:i A');
+            $etime = date_create($obj->end_time)->format('g:i A');
 
             echo "<div class='col-4'>
             <div class='card border-dark' style='border-radius: 20px'>
@@ -22,8 +26,8 @@
                 </div>
                 <p class='list-group list-group-flush'>
                     <li class='list-group-item'>$obj->Location</li>
-                    <li class='list-group-item'><p>$obj->start_date to $obj->end_date</p><p> $obj->day_of_week, $obj->start_time - $obj->end_time</p></li>
-                    <li class='list-group-item'><p>Member Fee:   $obj->MemberFee</p> <p>Non Member Fee:   $obj->NonMemberFee</p></li>
+                    <li class='list-group-item'><p>$sdate to $edate</p><p> $obj->day_of_week's, $stime - $etime</p></li>
+                    <li class='list-group-item'><p>Member Fee:   $$obj->MemberFee</p> <p>Non Member Fee:   $$obj->NonMemberFee</p></li>
                 </ul>
                 <div class='card-body'>";
             if ($auth->isLoggedIn()) {
