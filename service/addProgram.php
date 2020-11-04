@@ -2,6 +2,8 @@
 require_once 'Auth.php';
 require_once 'MySQLConnection.php';
 
+// TODO: This needs to be moved to models/Program.php
+
 // Verify that they are indeed a staff member.
 $auth = new Auth();
 $user = $auth->authorizeStaff();
