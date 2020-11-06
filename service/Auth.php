@@ -223,7 +223,7 @@ class Auth
      */
     function isLoggedIn()
     {
-        $uuid = $_COOKIE['cs341_uuid'];
+        $uuid = $_COOKIE['cs341_uuid'] ?? null;
 
         if ($uuid && strlen($uuid) === 36) {
 

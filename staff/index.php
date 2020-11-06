@@ -10,7 +10,7 @@ include_once "authorize.php";
     <a href="addProgram.php" class="btn btn-outline-secondary m-5">Add a program!</a>
     </html>
 <?php
-if ($_REQUEST['programCreated'] == 1)
+if ($_REQUEST['programCreated'] ?? 0 == 1)
     echo "<script>
     const Toast = Swal.mixin({ //when firing the toast, the first window closes automatically
         toast: true,

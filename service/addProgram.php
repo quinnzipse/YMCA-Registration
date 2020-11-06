@@ -13,8 +13,6 @@ if (!$user) {
     exit(400);
 }
 
-var_dump($_REQUEST);
-
 $mysql = new MySQLConnection();
 
 $program_name = mysqli_real_escape_string($mysql->conn, $_REQUEST['name']);
@@ -24,10 +22,14 @@ $sdate = mysqli_real_escape_string($mysql->conn, $_REQUEST['start_date']);
 $edate = mysqli_real_escape_string($mysql->conn, $_REQUEST['end_date']);
 $stime = mysqli_real_escape_string($mysql->conn, $_REQUEST['start_time']);
 $etime = mysqli_real_escape_string($mysql->conn, $_REQUEST['end_time']);
-$dow = mysqli_real_escape_string($mysql->conn, $_REQUEST['day_of_week']);
 $mem_price = mysqli_real_escape_string($mysql->conn, $_REQUEST['mem_price']);
 $non_mem_price = mysqli_real_escape_string($mysql->conn, $_REQUEST['non_mem_price']);
 $description = mysqli_real_escape_string($mysql->conn, ($_REQUEST['description'] ?? ''));
+
+$dow = 0;
+foreach ($_REQUEST['DayOfWeek'] as $item) {
+    $dow |= $item;
+}
 
 //var_dump($program_name, $location, $capacity, $sdate, $stime, $mem_price, $non_mem_price, $description);
 
@@ -36,10 +38,10 @@ $sql = "INSERT INTO Programs (Name, DescFile, Capacity, MemberFee, NonMemberFee,
 $result = mysqli_query($mysql->conn, $sql);
 
 if ($result) {
-//    header("Location: /staff/?programCreated=1");
+    header("Location: /staff/?programCreated=1");
     http_send_status(200);
     exit(200);
 }
-//header("Location: /staff/addProgram.php?failed=1");
+header("Location: /staff/addProgram.php?failed=1");
 http_send_status(400);
 exit(400);

@@ -1,4 +1,7 @@
 <?php
+
+use Cassandra\Date;
+
 require_once "MySQLConnection.php";
 
 class Program
@@ -10,6 +13,20 @@ class Program
      * @var MySQLConnection mysql
      */
     private MySQLConnection $mysql;
+
+    private int $id;
+    public string $name;
+    public string $shortDesc;
+    public string $descFile;
+    public int $capacity;
+    public int $memberFee;
+    public int $nonMemberFee;
+    public string $location;
+    public Date $startDate;
+    public Date $endDate;
+    public Date $startTime;
+    public Date $endTime;
+    private int $dayOfWeek;
 
     /**
      * Auth constructor.
@@ -42,4 +59,21 @@ class Program
     }
 
     // TODO: Create a function that saves all the datamembers back to the database.
+    function save() : bool
+    {
+        $sql = "UPDATE Programs SET Name = $this->name, ShortDesc = $this->shortDesc, DescFile = $this->descFile, 
+                    Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
+                    Location = $this->location, start_date = $this->startDate, end_date = $this->endDate, 
+                    start_time = $this->startTime, end_time = $this->endTime, day_of_week = $this->dayOfWeek 
+                    WHERE ID = $this->id";
+
+        return mysqli_query($this->mysql->conn, $sql);
+    }
+
+    function get(int $id) : bool
+    {
+        $sql = "SELECT * FROM Participants WHERE ID = $id";
+
+        return mysqli_query($this->mysql->conn, $sql);
+    }
 }
