@@ -13,6 +13,8 @@ if (!$user) {
     exit(400);
 }
 
+var_dump($_REQUEST);
+
 $mysql = new MySQLConnection();
 
 $program_name = mysqli_real_escape_string($mysql->conn, $_REQUEST['name']);
@@ -34,10 +36,10 @@ $sql = "INSERT INTO Programs (Name, DescFile, Capacity, MemberFee, NonMemberFee,
 $result = mysqli_query($mysql->conn, $sql);
 
 if ($result) {
-    header("Location: /staff/?programCreated=1");
+//    header("Location: /staff/?programCreated=1");
     http_send_status(200);
     exit(200);
 }
-header("Location: /staff/addProgram.php?failed=1");
+//header("Location: /staff/addProgram.php?failed=1");
 http_send_status(400);
 exit(400);
