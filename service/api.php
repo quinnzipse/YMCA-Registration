@@ -15,7 +15,7 @@ switch ($action) {
     case 'createProgram':
         $program = new Program();
         if (!$program->createProgram()) {
-//            header("Location: /staff/addProgram.php?failed=1");
+            header("Location: /staff/addProgram.php?failed=1");
             http_send_status(400);
             exit(400);
         }
