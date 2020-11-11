@@ -9,6 +9,7 @@
         <?php
         require "../models/Program.php";
         $page = $_GET['page'] ?? 0;
+        $loggedIn = $auth->isLoggedIn();
         $progs = Program::getPrograms($page);
 
         foreach ($progs as $obj) {
@@ -34,7 +35,7 @@
                     <li class='list-group-item'><p>Member Fee:   $$obj->memberFee</p> <p>Non Member Fee:   $$obj->nonMemberFee</p></li>
                 </ul>
                 <div class='card-body'>";
-            if ($auth->isLoggedIn()) {
+            if ($loggedIn) {
                 echo "<a href='#' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
             } else {
                 echo "<a href='../login.php' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
