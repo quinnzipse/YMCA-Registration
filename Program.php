@@ -25,7 +25,7 @@ class Program
     {
         $pageLength = 20;
         $mysql = new MySQLConnection();
-        $offset = $page * $pageLengthj
+        $offset = $page * $pageLength;
 
         $sql = "SELECT * FROM Programs LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
@@ -39,7 +39,7 @@ class Program
         return $res;
     }
 
-    // TODO: Create a function that creates a new program.
+    // TODO: Create a function that grabs current participant count.
 
     function isConflicting(Program $other): bool
     {
@@ -100,7 +100,7 @@ class Program
 		$sql = "SELECT ProgramID FROM Participant_Programs WHERE ParticipantID='$user_id';";
 
 		$programs = mysqli_query($mysql->conn, $sql)->fetch_array();
-		$result = array();	
+		$result = array();
 		
 		foreach($prog_id as &$programs) {
 			array_push($result, get($prog_id));	
