@@ -2,11 +2,12 @@
 set_include_path('/var/www/html');
 require_once 'authorize.php';
 require_once 'models/Program.php';
+require_once 'models/User.php';
 
-echo " -- GET -- ";
-var_dump($_GET);
-echo " -- POST -- ";
-var_dump($_POST);
+//echo " -- GET -- ";
+//var_dump($_GET);
+//echo " -- POST -- ";
+//var_dump($_POST);
 
 // ANYTHING in this file will require the user to be logged in.
 $action = $_GET['action'] ?? '';
@@ -20,6 +21,20 @@ switch ($action) {
         }
         header("Location: /staff/?programCreated=1");
         break;
+    case 'getRoster':
+        $program = Program::get($_GET['programID'] ?? -1);
+
+        echo json_encode($program->getRoster() ?? '');
+        exit(200);
+    case 'register':
+        $programID = $_GET['programID'] ?? '';
+        $mysql = new MySQLConnection();
+        $a = new Auth();
+        $u = $a->getCurrentUser($_COOKIE['cs341_uuid']);
+        $sql = "INSERT INTO Participant_Programs (ParticipantID, ProgramID) VALUES ($u->userID, $programID);";
+        mysqli_query($mysql->conn, $sql);
+        header("Location: /program");
+        break;
     default:
         // bad request.
         http_send_status(400);
@@ -30,5 +45,3 @@ switch ($action) {
 
 //}
 
-http_send_status(200);
-exit(200);

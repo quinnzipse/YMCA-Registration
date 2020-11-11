@@ -1,5 +1,5 @@
 <?php
-require_once "../service/MySQLConnection.php";
+require_once("service/MySQLConnection.php");
 
 class Program
 {
@@ -39,14 +39,21 @@ class Program
         return $res;
     }
 
-    // TODO: Create a function that creates a new program.
-
     function isConflicting(Program $other): bool
     {
-        if ($this->dayOfWeek & $other->dayOfWeek == 0) return false;
-        if ($this->startDate > $other->endDate && $this->endDate < $other->startDate) return false;
-        if ($this->startTime > $other->startTime && $this->startTime < $other->endTime) return true;
-        if ($other->startTime > $this->startTime && $other->startTime < $this->endTime) return true;
+        if (($this->dayOfWeek & $other->dayOfWeek) === 0) {
+            return false;
+        }
+        if ($this->startDate > $other->endDate || $this->endDate < $other->startDate) {
+            return false;
+        }
+        if ($this->startTime >= $other->startTime && $this->startTime <= $other->endTime) {
+            return true;
+        }
+        if ($other->startTime >= $this->startTime && $other->startTime <= $this->endTime) {
+            return true;
+        }
+
         return false;
     }
 
@@ -100,11 +107,27 @@ class Program
         return $program;
     }
 
+    static function getParticipantProgram(int $user): array
+    {
+        $result = array();
+
+        $mysql = new MySQLConnection();
+
+        $sql = "SELECT ProgramID FROM Participant_Programs WHERE ParticipantID='$user';";
+
+        $programs = mysqli_query($mysql->conn, $sql)->fetch_all(MYSQLI_NUM);
+        $prog = null;
+        foreach ($programs as $prog) {
+            array_push($result, Program::get(array_pop($prog)));
+        }
+        return $result;
+    }
+
     static function get(int $id): Program
     {
         $mysql = new MySQLConnection();
 
-        $sql = "SELECT * FROM Participants WHERE ID = $id";
+        $sql = "SELECT * FROM Programs WHERE ID = $id";
 
         $result = mysqli_query($mysql->conn, $sql)->fetch_object();
 
@@ -178,5 +201,19 @@ class Program
         }
 
         return $this->save();
+    }
+
+    public function getRoster()
+    {
+        $mysql = new MySQLConnection();
+
+        $sql = "SELECT LastName, FirstName, ParticipantID, Email, MembershipStatus FROM Participant_Programs LEFT JOIN Participants AS P ON ParticipantID = P.ID WHERE ProgramID = $this->id";
+
+        return mysqli_query($mysql->conn, $sql)->fetch_all();
+    }
+
+    public function getID(): int
+    {
+        return $this->id;
     }
 }

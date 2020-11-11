@@ -169,7 +169,8 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary">Create Program!</button>
+                    <button class="btn btn-primary" type="submit">Create Program!</button>
+                    <a class="btn btn-outline-secondary" type="button" href="/staff/">Cancel</a>
                 </form>
             </div>
         </div>

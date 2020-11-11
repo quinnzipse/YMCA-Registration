@@ -12,8 +12,16 @@ class User
 
     }
 
-    function register($classID){
+    static function register($classID){
         // TODO: Implement this function to allow users to register for classes.
+
+        $mysql = new MySQLConnection();
+        $sql = "SELECT COUNT(*) FROM Participant_Programs";
+        $auth = new Auth();
+        $u = $auth->getCurrentUser();
+
+        $sql = "INSERT INTO Participant_Programs (ParticipantID, ProgramID) VALUES ($u->userID, $classID)";
+
     }
 
     function isFree($classID){
