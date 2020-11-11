@@ -8,6 +8,23 @@ include_once "authorize.php";
     </head>
     <?php include '../menu.php'; ?>
     <a href="addProgram.php" class="btn btn-outline-secondary m-5">Add a program!</a>
+    <table class="container-fluid table">
+        <thead></thead>
+        <tbody>
+        <tr>
+            <td>Program 1</td>
+        </tr>
+        <tr>
+            <td>Program 1</td>
+        </tr>
+        <tr>
+            <td>Program 1</td>
+        </tr>
+        <tr>
+            <td>Program 1</td>
+        </tr>
+        </tbody>
+    </table>
     </html>
 <?php
 if ($_REQUEST['programCreated'] ?? 0 == 1)
