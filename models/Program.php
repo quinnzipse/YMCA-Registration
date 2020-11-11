@@ -3,10 +3,10 @@ require_once "../service/MySQLConnection.php";
 
 class Program
 {
-    private int $id;
+    private int $id = 0;
     public string $name;
     public string $shortDesc;
-    public string $descFile;
+    public string $descFile = '/tmp/null';
     public int $capacity;
     public int $memberFee;
     public int $nonMemberFee;
@@ -57,20 +57,27 @@ class Program
 
         $result = mysqli_query($mysql->conn, $sql)->fetch_array();
 
+        $sTime = $this->startTime->format('G:i');
+        $eTime = $this->endTime->format('G:i');
+        $sDate = $this->startDate->format('Y-m-d');
+        $eDate = $this->endDate->format('Y-m-d');
+
         if ($result['C'] == 1) {
-            $sql = "UPDATE Programs SET Name = $this->name, ShortDesc = $this->shortDesc, DescFile = $this->descFile, 
+            $sql = "UPDATE Programs SET Name = '$this->name', ShortDesc = '$this->shortDesc', DescFile = '$this->descFile', 
                     Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
-                    Location = $this->location, start_date = $this->startDate, end_date = $this->endDate, 
-                    start_time = $this->startTime, end_time = $this->endTime, day_of_week = $this->dayOfWeek 
+                    Location = '$this->location', start_date = '$sDate', end_date = '$eDate', 
+                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek 
                     WHERE ID = $this->id";
         } else {
             $sql = "INSERT INTO Programs (NAME, DESCFILE, ShortDesc, CAPACITY, MEMBERFEE, NONMEMBERFEE, LOCATION, START_DATE, 
-                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK) VALUES ($this->name, $this->descFile, $this->shortDesc,
-                      $this->capacity, $this->memberFee, $this->nonMemberFee, $this->location, $this->startDate, 
-                      $this->endDate, $this->startTime, $this->endTime, $this->dayOfWeek)";
+                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK) VALUES ('$this->name', '$this->descFile', '$this->shortDesc',
+                      $this->capacity, $this->memberFee, $this->nonMemberFee, '$this->location', '$sDate', 
+                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek)";
         }
 
-        return mysqli_query($mysql->conn, $sql);
+        $result = mysqli_query($mysql->conn, $sql);
+        var_dump(mysqli_error($mysql->conn));
+        return $result;
     }
 
     static function programFactory(object $input_program): Program
@@ -150,6 +157,26 @@ class Program
 
     function createProgram()
     {
+        $this->name = $_REQUEST['name'];
+        $this->location = $_REQUEST['location'];
+        $this->capacity = $_REQUEST['capacity'];
+        try {
+            $this->endDate = new DateTime($_REQUEST['end_date']);
+            $this->startDate = new DateTime($_REQUEST['start_date']);
+            $this->startTime = new DateTime($_REQUEST['start_time']);
+            $this->endTime = new DateTime($_REQUEST['end_time']);
+        } catch (Exception $e) {
+            return "Exception";
+        }
+        $this->memberFee = $_REQUEST['mem_price'];
+        $this->nonMemberFee = $_REQUEST['non_mem_price'];
+        $this->shortDesc = ($_REQUEST['description'] ?? '');
 
+        $this->dayOfWeek = 0;
+        foreach ($_REQUEST['DayOfWeek'] as $item) {
+            $this->dayOfWeek |= $item;
+        }
+
+        return $this->save();
     }
 }
