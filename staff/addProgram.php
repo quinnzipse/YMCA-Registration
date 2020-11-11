@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
     <title>Add a Program</title>
+    <style>
+        .form-check-input.is-valid ~ .form-check-label, .was-validated .form-check-input:valid ~ .form-check-label {
+            color: black !important;
+        }
+    </style>
 </head>
 <body>
 <?php include '../menu.php'; ?>
@@ -9,7 +14,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2">
-                <form action="" class="mt-2 needs-validation" method="post" novalidate>
+                <form action="/service/api.php?action=createProgram" class="mt-2 needs-validation" method="post" novalidate>
                     <br>
                     <h2 class="font-weight-light mt-4">Add a Program</h2>
                     <hr>
@@ -99,7 +104,8 @@
                                     <label class="form-check-label" for="Tuesday">Tuesday</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Wednesday"
+                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox"
+                                           id="Wednesday"
                                            value="8">
                                     <label class="form-check-label" for="Wednesday">Wednesday</label>
                                 </div>
@@ -117,6 +123,9 @@
                                     <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Saturday"
                                            value="64">
                                     <label class="form-check-label" for="Saturday">Saturday</label>
+                                </div>
+                                <div class="invalid-feedback" id="check_message">At least one day of the week is
+                                    required.
                                 </div>
                             </div>
                         </div>
@@ -171,47 +180,45 @@
     let form = document.getElementsByClassName('needs-validation')[0];
     // Loop over them and prevent submission
     form.addEventListener('submit', function (event) {
-        if (validateInput() || form.checkValidity() === false) {
+        let checked = validateChecks();
+        if (form.checkValidity() === false || !checked) {
             event.preventDefault();
             event.stopPropagation();
         }
         form.classList.add('was-validated');
     }, false);
 
-    function validateDateTime() {
-
-        endDate.prop('min', startDate.val());
-        startDate.prop('max', endDate.val());
-
-        console.log(endTime.val());
-        console.log(startTime.val());
-
-        startTime.prop('max', endTime.val());
-        endTime.prop('min', startTime.val());
-
-        endDate.removeClass("is-invalid");
-        endTime.removeClass("is-invalid");
-
-        // if (endDate.val() && startDate.val() > endDate.val()) {
-        //     endDate.val('');
-        //     endDate.addClass("is-invalid");
-        // }
-        //
-        // if (startTime.val() > endTime.val()) {
-        //     endTime.val('');
-        //     endTime.addClass("is-invalid");
-        // }
-    }
-
     let startDate = $('#start_date');
     let endDate = $('#end_date');
     let startTime = $('#start_time');
     let endTime = $('#end_time');
 
-    startDate[0].addEventListener('change', validateDateTime);
-    endDate[0].addEventListener('change', validateDateTime);
-    startTime[0].addEventListener('change', validateDateTime);
-    endTime[0].addEventListener('change', validateDateTime);
+    startDate[0].addEventListener('change', () => endDate.prop('min', startDate.val()));
+    endDate[0].addEventListener('change', () => startDate.prop('max', endDate.val()));
+    startTime[0].addEventListener('change', () => endTime.prop('min', addMins(startTime.val(), 15)));
+    endTime[0].addEventListener('change', () => startTime.prop('max', endTime.val()));
+
+    function addMins(t, mins) {
+        let d = new Date();
+
+        d.setHours(Number(t.substr(0, t.indexOf(":"))));
+        d.setMinutes(Number(t.substr(t.indexOf(":") + 1)) + mins);
+
+        return d.toTimeString().substr(0, 5);
+    }
+
+    function validateChecks() {
+        let checked = false;
+
+        $('input[type=checkbox]').each((i, val) => {
+            if (val.checked) checked = true;
+        });
+
+        if (!checked) $('#check_message').addClass('d-block');
+        else $('#check_message').removeClass('d-block');
+
+        return checked;
+    }
 
 </script>
 </body>

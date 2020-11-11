@@ -74,11 +74,11 @@ class Auth
      * This will be executed at a set interval (~1 minute) as a cron task to check for stale UUIDs.
      * If so, it will deauthorize that UUID, forcing the end user to log in again.
      *
-     * UUID is stale if it hasn't been updated in 10 minutes.
+     * UUID is stale if it hasn't been updated in 20 minutes.
      */
     function validateSessions()
     {
-        $sql = 'SELECT uuid FROM Authenticated_Users WHERE TIMESTAMPDIFF(minute, modified_at, CURRENT_TIME) > 10';
+        $sql = 'SELECT uuid FROM Authenticated_Users WHERE TIMESTAMPDIFF(minute, modified_at, CURRENT_TIME) > 20';
         $result = mysqli_query($this->mysql->conn, $sql);
 
         if ($result) {
@@ -207,7 +207,7 @@ class Auth
      */
     function refreshToken(string $uuid): bool
     {
-        setcookie("cs341_uuid", $uuid, array('expires' => time() + 700, 'path' => '/', 'httponly' => true));
+        setcookie("cs341_uuid", $uuid, array('expires' => time() + 1200, 'path' => '/', 'httponly' => true));
         $result = mysqli_query($this->mysql->conn, "UPDATE Authenticated_Users SET modified_at = CURRENT_TIME WHERE uuid = '$uuid'");
 
         return $result != false;
