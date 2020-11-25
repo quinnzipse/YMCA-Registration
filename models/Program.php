@@ -10,6 +10,7 @@ class Program
     public int $capacity;
     public int $memberFee;
     public int $nonMemberFee;
+    public string $indexed;
     public string $location;
     public DateTime $startDate;
     public DateTime $endDate;
@@ -73,13 +74,13 @@ class Program
             $sql = "UPDATE Programs SET Name = '$this->name', ShortDesc = '$this->shortDesc', DescFile = '$this->descFile', 
                     Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
                     Location = '$this->location', start_date = '$sDate', end_date = '$eDate', 
-                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek 
+                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = $this->indexed 
                     WHERE ID = $this->id";
         } else {
             $sql = "INSERT INTO Programs (NAME, DESCFILE, ShortDesc, CAPACITY, MEMBERFEE, NONMEMBERFEE, LOCATION, START_DATE, 
-                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK) VALUES ('$this->name', '$this->descFile', '$this->shortDesc',
+                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK, indexed) VALUES ('$this->name', '$this->descFile', '$this->shortDesc',
                       $this->capacity, $this->memberFee, $this->nonMemberFee, '$this->location', '$sDate', 
-                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek)";
+                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek, '$this->indexed')";
         }
 
         $result = mysqli_query($mysql->conn, $sql);
@@ -103,6 +104,7 @@ class Program
         $program->capacity = $input_program->Capacity;
         $program->memberFee = $input_program->MemberFee;
         $program->nonMemberFee = $input_program->NonMemberFee;
+        $program->indexed = $input_program->indexed;
 
         return $program;
     }
@@ -199,6 +201,8 @@ class Program
         foreach ($_REQUEST['DayOfWeek'] as $item) {
             $this->dayOfWeek |= $item;
         }
+
+        $this->indexed = metaphone($this->name) . " " . metaphone($this->location);
 
         return $this->save();
     }

@@ -10,6 +10,7 @@ $cookieOptions = array('expires' => time() + 10, 'path' => '/register.php', 'htt
 $email = mysqli_real_escape_string($mysql->conn, $_REQUEST['username']);
 $firstName = mysqli_real_escape_string($mysql->conn, $_REQUEST['firstName']);
 $lastName = mysqli_real_escape_string($mysql->conn, $_REQUEST['lastName']);
+$index = metaphone($firstName) . " " . metaphone($lastName) . " " . metaphone($email);
 
 // HASH THE PASSWORD!
 $hashedPassword = password_hash($_REQUEST['password'], PASSWORD_BCRYPT);
@@ -35,7 +36,8 @@ if ($result) {
 
     } else {
         // Record Doesn't exist, we will have to add it!
-        $sql = "INSERT INTO Participants (Email, FirstName, LastName, Password) VALUES ('$email', '$firstName', '$lastName', '$hashedPassword');";
+        $sql = "INSERT INTO Participants (Email, FirstName, LastName, Password, indexed) VALUES 
+                ('$email', '$firstName', '$lastName', '$hashedPassword', '$index');";
         $result = mysqli_query($mysql->conn, $sql);
 
         if (!$result) {
