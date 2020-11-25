@@ -29,5 +29,8 @@ class User
     }
 
     // TODO: Steal getUser from auth.php
+
     // TODO: Create a function that save user to database.
+
+    // TODO: Create function to cancel class registration
 }
