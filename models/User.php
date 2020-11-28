@@ -28,6 +28,22 @@ class User
         // TODO: Check to see if the user is registered for another class during this time.
     }
 
+    static function search(string $search_val)
+    {
+        $mysql = new MySQLConnection();
+        $val = metaphone($search_val);
+
+        $sql = "SELECT * FROM Participants WHERE indexed LIKE '%$val%'";
+
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if($result) {
+            return $result->fetch_all();
+        } else {
+            return mysqli_error($mysql->conn);
+        }
+    }
+
     // TODO: Steal getUser from auth.php
 
     // TODO: Create a function that save user to database.

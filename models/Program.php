@@ -3,7 +3,7 @@ require_once("service/MySQLConnection.php");
 
 class Program
 {
-    private int $id = 0;
+    public int $id = 0;
     public string $name;
     public string $shortDesc;
     public string $descFile = '/tmp/null';
@@ -17,6 +17,7 @@ class Program
     public DateTime $startTime;
     public DateTime $endTime;
     private int $dayOfWeek;
+    public array $days;
 
     public function __construct()
     {
@@ -105,6 +106,7 @@ class Program
         $program->memberFee = $input_program->MemberFee;
         $program->nonMemberFee = $input_program->NonMemberFee;
         $program->indexed = $input_program->indexed;
+        $program->days = $program->getDaysOfWeek();
 
         return $program;
     }
@@ -177,6 +179,28 @@ class Program
                 case "saturday":
                     $this->dayOfWeek |= 64;
             }
+        }
+    }
+
+    static function search(string $search_val)
+    {
+        $mysql = new MySQLConnection();
+        $val = metaphone($search_val);
+
+        $sql = "SELECT * FROM Programs WHERE indexed LIKE '%$val%'";
+
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if ($result) {
+            $output = array();
+
+            while ($row = mysqli_fetch_object($result)) {
+                array_push($output, Program::programFactory($row));
+            }
+
+            return $output;
+        } else {
+            return mysqli_error($mysql->conn);
         }
     }
 

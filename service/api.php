@@ -35,6 +35,24 @@ switch ($action) {
         mysqli_query($mysql->conn, $sql);
         header("Location: /program");
         break;
+    case 'search_programs':
+        if (isset($_REQUEST['v'])) {
+            $result = Program::search($_REQUEST['v']);
+            echo json_encode($result);
+            exit(200);
+        }
+        break;
+    case 'get_programs':
+        $result = Program::getPrograms($_REQUEST['page'] ?? 0);
+        echo json_encode($result);
+        exit(200);
+    case 'search_users':
+        if (isset($_REQUEST['v'])) {
+            $result = User::search($_REQUEST['v']);
+            echo json_encode($result);
+            exit(200);
+        }
+        break;
     default:
         // bad request.
         http_send_status(400);
