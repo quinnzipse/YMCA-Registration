@@ -1,4 +1,4 @@
-<?php require_once 'admin/authorize.php'; ?>
+<?php require_once 'authorize.php'; ?>
 <html lang="en">
 <head>
     <title>Add a Program</title>
@@ -9,15 +9,14 @@
     </style>
 </head>
 <body>
-<?php include 'menu.php'; ?>
+<?php include '../menu.php'; ?>
 <main>
-    <div class="container mb-5">
+    <div class="container">
         <div class="row">
             <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2">
-                <form action="/service/api.php?action=createProgram" class="mt-2 needs-validation" method="post"
-                      novalidate>
+                <form action="/service/api.php?action=createProgram" class="mt-2 needs-validation" method="post" novalidate>
                     <br>
-                    <h2 class="font-weight-light mt-2">Add a Program</h2>
+                    <h2 class="font-weight-light mt-4">Add a Program</h2>
                     <hr>
                     <div class="row">
                         <div class="col-md-12">
@@ -166,12 +165,12 @@
                             <div class="form-group">
                                 <label for="description">Description</label>
                                 <textarea class="form-control" id="description"
-                                          name="description" rows="3" maxlength="100"></textarea>
+                                          name="description" rows="5" maxlength="100"></textarea>
                             </div>
                         </div>
                     </div>
                     <button class="btn btn-primary" type="submit">Create Program!</button>
-                    <a class="btn btn-outline-secondary" type="button" href="/admin/programs/index.php">Cancel</a>
+                    <a class="btn btn-outline-secondary" type="button" href="/staff/">Cancel</a>
                 </form>
             </div>
         </div>

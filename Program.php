@@ -1,23 +1,21 @@
 <?php
-require_once("service/MySQLConnection.php");
+require_once "../service/MySQLConnection.php";
 
 class Program
 {
-    public int $id = 0;
+    private int $id;
     public string $name;
     public string $shortDesc;
-    public string $descFile = '/tmp/null';
+    public string $descFile;
     public int $capacity;
     public int $memberFee;
     public int $nonMemberFee;
-    public string $indexed;
     public string $location;
     public DateTime $startDate;
     public DateTime $endDate;
     public DateTime $startTime;
     public DateTime $endTime;
     private int $dayOfWeek;
-    public array $days;
 
     public function __construct()
     {
@@ -41,21 +39,14 @@ class Program
         return $res;
     }
 
+    // TODO: Create a function that grabs current participant count.
+
     function isConflicting(Program $other): bool
     {
-        if (($this->dayOfWeek & $other->dayOfWeek) === 0) {
-            return false;
-        }
-        if ($this->startDate > $other->endDate || $this->endDate < $other->startDate) {
-            return false;
-        }
-        if ($this->startTime >= $other->startTime && $this->startTime <= $other->endTime) {
-            return true;
-        }
-        if ($other->startTime >= $this->startTime && $other->startTime <= $this->endTime) {
-            return true;
-        }
-
+        if ($this->dayOfWeek & $other->dayOfWeek == 0) return false;
+        if ($this->startDate > $other->endDate && $this->endDate < $other->startDate) return false;
+        if ($this->startTime > $other->startTime && $this->startTime < $other->endTime) return true;
+        if ($other->startTime > $this->startTime && $other->startTime < $this->endTime) return true;
         return false;
     }
 
@@ -66,27 +57,20 @@ class Program
 
         $result = mysqli_query($mysql->conn, $sql)->fetch_array();
 
-        $sTime = $this->startTime->format('G:i');
-        $eTime = $this->endTime->format('G:i');
-        $sDate = $this->startDate->format('Y-m-d');
-        $eDate = $this->endDate->format('Y-m-d');
-
         if ($result['C'] == 1) {
-            $sql = "UPDATE Programs SET Name = '$this->name', ShortDesc = '$this->shortDesc', DescFile = '$this->descFile', 
+            $sql = "UPDATE Programs SET Name = $this->name, ShortDesc = $this->shortDesc, DescFile = $this->descFile, 
                     Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
-                    Location = '$this->location', start_date = '$sDate', end_date = '$eDate', 
-                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = $this->indexed 
+                    Location = $this->location, start_date = $this->startDate, end_date = $this->endDate, 
+                    start_time = $this->startTime, end_time = $this->endTime, day_of_week = $this->dayOfWeek 
                     WHERE ID = $this->id";
         } else {
             $sql = "INSERT INTO Programs (NAME, DESCFILE, ShortDesc, CAPACITY, MEMBERFEE, NONMEMBERFEE, LOCATION, START_DATE, 
-                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK, indexed) VALUES ('$this->name', '$this->descFile', '$this->shortDesc',
-                      $this->capacity, $this->memberFee, $this->nonMemberFee, '$this->location', '$sDate', 
-                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek, '$this->indexed')";
+                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK) VALUES ($this->name, $this->descFile, $this->shortDesc,
+                      $this->capacity, $this->memberFee, $this->nonMemberFee, $this->location, $this->startDate, 
+                      $this->endDate, $this->startTime, $this->endTime, $this->dayOfWeek)";
         }
 
-        $result = mysqli_query($mysql->conn, $sql);
-        var_dump(mysqli_error($mysql->conn));
-        return $result;
+        return mysqli_query($mysql->conn, $sql);
     }
 
     static function programFactory(object $input_program): Program
@@ -105,33 +89,31 @@ class Program
         $program->capacity = $input_program->Capacity;
         $program->memberFee = $input_program->MemberFee;
         $program->nonMemberFee = $input_program->NonMemberFee;
-        $program->indexed = $input_program->indexed;
-        $program->days = $program->getDaysOfWeek();
 
         return $program;
     }
+    static function getParticipantProgram(int $user_id): array
+	{
 
-    static function getParticipantProgram(int $user): array
-    {
-        $result = array();
+		$mysql = new MySQLConnection();
 
-        $mysql = new MySQLConnection();
+		$sql = "SELECT ProgramID FROM Participant_Programs WHERE ParticipantID='$user_id';";
 
-        $sql = "SELECT ProgramID FROM Participant_Programs WHERE ParticipantID='$user';";
-
-        $programs = mysqli_query($mysql->conn, $sql)->fetch_all(MYSQLI_NUM);
-        $prog = null;
-        foreach ($programs as $prog) {
-            array_push($result, Program::get(array_pop($prog)));
-        }
-        return $result;
-    }
-
+		$programs = mysqli_query($mysql->conn, $sql)->fetch_array();
+		$result = array();
+		
+		foreach($prog_id as &$programs) {
+			array_push($result, get($prog_id));	
+		}
+		
+		return $result;
+		
+	}
     static function get(int $id): Program
     {
         $mysql = new MySQLConnection();
 
-        $sql = "SELECT * FROM Programs WHERE ID = $id";
+        $sql = "SELECT * FROM Participants WHERE ID = $id";
 
         $result = mysqli_query($mysql->conn, $sql)->fetch_object();
 
@@ -182,66 +164,8 @@ class Program
         }
     }
 
-    static function search(string $search_val)
-    {
-        $mysql = new MySQLConnection();
-        $val = metaphone($search_val);
-
-        $sql = "SELECT * FROM Programs WHERE indexed LIKE '%$val%'";
-
-        $result = mysqli_query($mysql->conn, $sql);
-
-        if ($result) {
-            $output = array();
-
-            while ($row = mysqli_fetch_object($result)) {
-                array_push($output, Program::programFactory($row));
-            }
-
-            return $output;
-        } else {
-            return mysqli_error($mysql->conn);
-        }
-    }
-
     function createProgram()
     {
-        $this->name = $_REQUEST['name'];
-        $this->location = $_REQUEST['location'];
-        $this->capacity = $_REQUEST['capacity'];
-        try {
-            $this->endDate = new DateTime($_REQUEST['end_date']);
-            $this->startDate = new DateTime($_REQUEST['start_date']);
-            $this->startTime = new DateTime($_REQUEST['start_time']);
-            $this->endTime = new DateTime($_REQUEST['end_time']);
-        } catch (Exception $e) {
-            return "Exception";
-        }
-        $this->memberFee = $_REQUEST['mem_price'];
-        $this->nonMemberFee = $_REQUEST['non_mem_price'];
-        $this->shortDesc = ($_REQUEST['description'] ?? '');
 
-        $this->dayOfWeek = 0;
-        foreach ($_REQUEST['DayOfWeek'] as $item) {
-            $this->dayOfWeek |= $item;
-        }
-
-        $this->indexed = metaphone($this->name) . " " . metaphone($this->location);
-
-        return $this->save();
-    }
-
-    public function getRoster()
-    {
-        $mysql = new MySQLConnection();
-
-        $sql = "SELECT LastName, FirstName, ParticipantID, Email, MembershipStatus FROM Participant_Programs LEFT JOIN Participants AS P ON ParticipantID = P.ID WHERE ProgramID = $this->id";
-
-        return mysqli_query($mysql->conn, $sql)->fetch_all();
-    }
-
-    public function getID(): int
-    {
-        return $this->id;
     }
 }

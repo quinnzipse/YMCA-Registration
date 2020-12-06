@@ -2,11 +2,11 @@
 require "models/Program.php";
 include "menu.php";
 $page = $_GET['page'] ?? 0;
-$searchVal = $_GET['s'] ?? '';
-$progs = Program::search($searchVal);
+$progs = Program::getPrograms($page);
 $loggedIn = $auth->isLoggedIn();
 $userProgs = array();
 if ($loggedIn) $userProgs = Program::getParticipantProgram($loggedIn->userID);
+
 
 function print_program($program, bool $disabled, bool $registered)
 {
@@ -49,29 +49,7 @@ function print_program($program, bool $disabled, bool $registered)
     <title>Browse Programs</title>
 </head>
 <div class="container">
-    <div class="row mt-4">
-        <div class="col-md-7">
-            <form action="index.php">
-                <label for="search" class="sr-only">Search</label>
-                <div class="input-group input-group-sm">
-                    <input name="s" id="search" class="form-control"
-                           type="text" placeholder="Search..." value="<?php echo $_GET['s'] ?? '' ?>">
-                    <div class="input-group-append">
-                        <button class="btn btn-sm btn-outline-primary">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
-                                <path fill-rule="evenodd"
-                                      d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="row mb-5">
+    <div class="row mt-3">
         <?php
         foreach ($progs as $obj) {
             $disable = false;
