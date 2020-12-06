@@ -1,4 +1,5 @@
 <?php
+
 set_include_path('/var/www/html');
 require_once 'authorize.php';
 require_once 'models/Program.php';
@@ -15,11 +16,19 @@ switch ($action) {
     case 'createProgram':
         $program = new Program();
         if (!$program->createProgram()) {
-            header("Location: /staff/addProgram.php?failed=1");
+            header("Location: /admin/addProgram.php?failed=1");
             http_send_status(400);
             exit(400);
         }
-        header("Location: /staff/?programCreated=1");
+        header("Location: /admin/index.php?programCreated=1");
+        break;
+    case 'editProgram':
+        if (!Program::editProgram((int)$_POST['id'])) {
+            header("Location: /admin/editProgram.php?p=" . $_POST['id'] . "&failed=1");
+            http_send_status(400);
+            exit(400);
+        }
+        header("Location: /admin/index.php?programEdited=1");
         break;
     case 'getRoster':
         $program = Program::get($_GET['programID'] ?? -1);
@@ -31,7 +40,7 @@ switch ($action) {
         $mysql = new MySQLConnection();
         $a = new Auth();
         $u = $a->getCurrentUser($_COOKIE['cs341_uuid']);
-        $sql = "INSERT INTO Participant_Programs (ParticipantID, ProgramID) VALUES ($u->userID, $programID);";
+        $sql = "INSERT INTO Participant_Programs (ParticipantID, ProgramID, status) VALUES ($u->userID, $programID, 0);";
         mysqli_query($mysql->conn, $sql);
         header("Location: /program");
         break;
@@ -55,7 +64,7 @@ switch ($action) {
         break;
     default:
         // bad request.
-        http_send_status(400);
+//        http_send_status(400);
         exit(400);
 }
 

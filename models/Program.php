@@ -1,4 +1,9 @@
 <?php
+//namespace models;
+//use DateTime;
+//use Exception;
+//use MySQLConnection;
+
 require_once("service/MySQLConnection.php");
 
 class Program
@@ -73,9 +78,9 @@ class Program
 
         if ($result['C'] == 1) {
             $sql = "UPDATE Programs SET Name = '$this->name', ShortDesc = '$this->shortDesc', DescFile = '$this->descFile', 
-                    Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
+                    Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee, 
                     Location = '$this->location', start_date = '$sDate', end_date = '$eDate', 
-                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = $this->indexed 
+                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = '$this->indexed' 
                     WHERE ID = $this->id";
         } else {
             $sql = "INSERT INTO Programs (NAME, DESCFILE, ShortDesc, CAPACITY, MEMBERFEE, NONMEMBERFEE, LOCATION, START_DATE, 
@@ -135,6 +140,7 @@ class Program
 
         $result = mysqli_query($mysql->conn, $sql)->fetch_object();
 
+        if (!$result) return new Program();
         return Program::programFactory($result);
     }
 
@@ -182,6 +188,19 @@ class Program
         }
     }
 
+    static function editProgram(int $id = -1): bool
+    {
+        if ($id != -1) {
+            echo 'getting';
+            $program = Program::get($id);
+            return $program->createProgram();
+        }
+        else {
+            echo "Program ID was bad";
+            return false;
+        }
+    }
+
     static function search(string $search_val)
     {
         $mysql = new MySQLConnection();
@@ -192,6 +211,7 @@ class Program
         $result = mysqli_query($mysql->conn, $sql);
 
         if ($result) {
+
             $output = array();
 
             while ($row = mysqli_fetch_object($result)) {
