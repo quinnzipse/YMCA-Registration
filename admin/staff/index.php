@@ -25,55 +25,56 @@ require_once '../authorize.php';
             </div>
             <div class="card shadow my-4 d-none" id="detail-card">
                 <div class="card-body">
-                    <h3 class="card-title" id="name">Shark</h3>
+                    <h3 class="card-title" id="name"><span id="lastName"></span>, <span id="firstName"></span> <span
+                                id="middleInit"></span></h3>
                     <hr>
                     <div class="card-text">
-                        <p class="my-4" id="description">
-                            This is a test description. It just shows what this card may look like.
-                        </p>
-                        <hr class="mb-4">
-                        <div class="row my-1">
-                            <div class="col-lg-12 col-xl-5">
-                                <span><strong>Location:</strong></span>
-                                <p id="location">YMCA Onalaska Pool</p>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h4 class="lead"><strong>Contact Info:</strong></h4>
+
+                                <small><strong>Email: </strong></small>
+                                <a id="email" href="mailto:qzipse@outlook.com">qzipse@outlook.com</a>
+                                <br>
+
+                                <small><strong>Phone:</strong></small>
+                                <span id="phoneNumber">(507) 273-6959</span>
+                                <br>
                             </div>
-                            <div class="col-lg-6 col-xl-3">
-                                <span><strong>Member Fee:</strong></span>
-                                <p class="mt-1">$<span id="memberFee">85</span></p>
+                            <div class="col-lg-6">
+                                <h4 class="lead"><strong>Work Info:</strong></h4>
+
+                                <small><strong>Start Date: </strong></small>
+                                <span class="mt-1" id="startDate">12/7/2020</span>
+                                <br>
+
+                                <small><strong>Salary:</strong></small>
+                                <span>$<span id="salary">100,000</span></span>
+                                <br>
                             </div>
-                            <div class="col-lg-6 col-xl-4">
-                                <span><strong>Non-Member Fee:</strong></span>
-                                <p class="mt-1">$<span id="nonMemberFee">230</span></p>
-                            </div>
+
                         </div>
-                        <div class="row my-1">
-                            <div class="col-lg-7 col-xl-8 text-truncate">
-                                <span><strong>Days of the Week:</strong></span>
-                                <p class="mt-1" id="dayOfWeek">Sunday,
-                                    Monday, Tuesday, Wednesday, Thursday, Friday</p>
-                            </div>
-                            <div class="col-lg-5 col-xl-4">
-                                <span><strong>Capacity:</strong></span>
-                                <p class="mt-1" id="capacity">8</p>
-                            </div>
-                        </div>
-                        <div class="row my-1">
-                            <div class="col-lg-6 col-xl-5">
-                                <span><strong>Date Range:</strong></span>
-                                <p class="mt-1" id="date-range">11/15/2020 - 12/13/2020</p>
-                            </div>
-                            <div class="col-lg-6 col-xl-5">
-                                <span><strong>Time Range:</strong></span>
-                                <p class="mt-1" id="time-range">5:00 PM - 5:40 PM</p>
-                            </div>
-                        </div>
+
+                        <h4 class="lead mt-3"><strong>Personal Info:</strong></h4>
+
+                        <small><strong title="Date of Birth">DOB: </strong></small>
+                        <span class="mt-1" id="dob">5/11/2001</span>
+                        <br>
+
+                        <small><strong>SSN (Last 4): </strong></small>
+                        <span class="mt-1">XXX-XX-<span id="ssn">2042</span></span>
+                        <br>
+
+                        <small><strong>Address:</strong></small>
+                        <span id="address">24795 555th St, West Concord, MN 55985</span>
+                        <br>
+
                     </div>
                 </div>
                 <div class="card-footer py-2 px-3">
                     <div class="float-right">
-                        <button class="btn btn-sm btn-info" id="roster">View Roster</button>
                         <button class="btn btn-sm btn-primary" id="edit">Edit</button>
-                        <button class="btn btn-sm btn-danger" id="cancel">Cancel</button>
+                        <button class="btn btn-sm btn-danger" id="remove">Remove</button>
                     </div>
                 </div>
             </div>
@@ -92,7 +93,7 @@ require_once '../authorize.php';
         <div class="col-xl-8 col-lg-7">
             <div class="row mb-2">
                 <div class="col-md-2">
-                    <a href="addProgram.php" class="btn btn-sm btn-success">&plus; New</a>
+                    <a href="addStaff.php" class="btn btn-sm btn-success">&plus; Add</a>
                 </div>
                 <div class="col-md-4 offset-md-6">
                     <label for="search" class="sr-only">Search:</label>
@@ -111,12 +112,10 @@ require_once '../authorize.php';
                 <table class="table table-hover">
                     <thead class="thead-light">
                     <tr>
-                        <th>Name</th>
-                        <th>Capacity</th>
-                        <th>Days of Week</th>
-                        <th>Dates</th>
-                        <th>Time</th>
-                        <!--                        <th></th>-->
+                        <th>Last</th>
+                        <th>First</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
                     </tr>
                     </thead>
                     <tbody id="table_body">
@@ -142,50 +141,9 @@ require_once '../authorize.php';
     if (isset($_REQUEST['programEdited'])) echo "Toast.fire({title: 'Program Updated!'});";
     ?>
 
-    // TODO
-    const programs = [];
+    const staff = [];
 
-    function hideRoster() {
-        $('#roster-card').addClass('d-none');
-        $('#roster-data').html('');
-        $('#detail-card').removeClass('d-none');
-    }
-
-    async function getRoster(id) {
-        let request = await fetch('/service/api.php?action=getRoster&programID=' + id);
-        let json = await request.json();
-        if (!json) console.log("Got nothing :(");
-
-        let program = programs.find(val => val.id === id);
-
-        $('#rosterName').text(program.name);
-
-        // Setup roster data.
-        let listOfPeps = $('#roster-data');
-
-        let html = '';
-
-        // Generate the header
-        html += '<thead>';
-        if (json.length === 0) html += '<tr><th>No one has signed up yet!</th></tr>';
-        else html += '<tr><th>Last Name</th><th>First Name</th><th>Email</th></tr>';
-        html += '</thead>';
-
-        // Generate the body
-        html += '<tbody>';
-        json.forEach(val => {
-            html += `<tr><td>${val[0]}</td><td>${val[1]}</td><td>${val[3]}</td></tr>`;
-        });
-        html += '</tbody>';
-
-        listOfPeps.html(html);
-
-        // Show our work off!
-        $('#detail-card').addClass('d-none');
-        $('#roster-card').removeClass('d-none');
-    }
-
-    function deleteProgram(id) {
+    function disableStaff(id) {
         // TODO!!!
     }
 
@@ -193,12 +151,12 @@ require_once '../authorize.php';
 
     searchField.on('keypress', (val) => val.code === 'Enter' ? search() : '');
 
-    // getPrograms();
+    getStaff();
 
     async function search() {
         let value = searchField.val();
         console.log(value);
-        let response = await fetch(`/service/api.php?action=search_programs&v=${value}`);// TODO
+        let response = await fetch(`/service/api.php?action=search_staff&v=${value}`);
 
         if (response.redirected) {
             window.location = '/login.php?reauth=1';
@@ -207,15 +165,13 @@ require_once '../authorize.php';
         let json = await response.json();
         let html = '';
 
-        json.forEach(val => {
-            html += generateLine(val);
-        });
+        json.forEach(val => html += generateLine(val));
 
         $('#table_body').html(html);
     }
 
-    async function getPrograms() {
-        const response = await fetch(`/service/api.php?action=get_programs`);
+    async function getStaff() {
+        const response = await fetch(`/service/api.php?action=get_staff`);
 
         if (response.redirected) {
             window.location = '/login.php?reauth=1';
@@ -230,72 +186,60 @@ require_once '../authorize.php';
     }
 
     function generateLine(val) {
-        programs.push(val);
-
-        let startDate = new Date(val['startDate']['date']).toLocaleDateString("en-US");
-        let endDate = new Date(val['endDate']['date']).toLocaleDateString("en-US");
-        let startTime = new Date(val['startTime']['date']).toLocaleTimeString("en-US", {
-            timeStyle: 'short'
-        });
-        let endTime = new Date(val['endTime']['date']).toLocaleTimeString("en-US", {
-            timeStyle: 'short'
-        });
+        staff.push(val);
 
         return ` <tr onclick="get(${val['id']})">
-                <td id='${val['id']}'>${val['name']}</td>
-                <td>${val['capacity']}</td>
-                <td class='text-truncate'>${val['days'].join(', ')}</td>
-                <td>${startDate} - ${endDate}</td>
-                <td>${startTime} - ${endTime}</td>
-
+                <td>${val['lastName']}</td>
+                <td>${val['firstName']}</td>
+                <td>${val['email']}</td>
+                <td>${formatPhoneNumber(val['phoneNumber'])}</td>
             </tr>`;
     }
 
     function setupButtons(id) {
         // get the buttons
-        let rosterButton = $('#roster');
-        let cancelButton = $('#cancel');
+        let removeButton = $('#remove');
         let editButton = $('#edit');
 
         // Destroy the previous onclick listeners.
-        rosterButton.off();
-        cancelButton.off();
+        removeButton.off();
         editButton.off();
 
         // Create new listeners
-        rosterButton.on('click', () => getRoster(id));
-        cancelButton.on('click', () => cancel(id));
-        editButton.on('click', () => window.location = `editProgram.php?p=${id}`);
+        removeButton.on('click', () => removeStaff(id));
+        editButton.on('click', () => window.location = `editStaff.php?s=${id}`);
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatPhoneNumber(number){
+        return "(" +  number.substr(0, 3) + ") " + number.substr(3, 3) + "-" + number.substring(6);
     }
 
     function get(id) {
 
         // Find the program in the array.
-        let program = programs.find(it => it.id === id);
+        let user = staff.find(it => it.id === id);
 
         // Fill in the card.
-        $('#name').text(program.name);
-        $('#description').text(program.shortDesc);
-        $('#capacity').text(program.capacity);
-        $('#location').text(program.location);
-        $('#nonMemberFee').text(program.nonMemberFee.toFixed(2));
-        $('#memberFee').text(program.memberFee.toFixed(2));
+        $('#lastName').text(user.lastName);
+        $('#firstName').text(user.firstName);
+        $('#middleInit').text(user.middleInit.toUpperCase());
+        $('#salary').text(numberWithCommas(user.salary.toFixed(2)));
+        $('#address').text((user.address === '' ? 'N/A' : user.address));
+        $('#ssn').text(user.ssn.substr(-4));
+        $('#phoneNumber').text(formatPhoneNumber(user.phoneNumber));
 
-        let dow = program.days.join(", ");
-        let dowEl = $('#dayOfWeek');
-        dowEl.text(dow);
-        dowEl.prop('title', dow);
+        let emailEl = $("#email");
+        emailEl.text(user.email);
+        emailEl.prop('href', `mailto:${user.email}`);
 
-        let startTime = new Date(program.startTime.date).toLocaleTimeString('en-US', {
-            hour: "numeric",
-            minute: "numeric"
-        });
-        let endTime = new Date(program.endTime.date).toLocaleTimeString('en-US', {hour: "numeric", minute: "numeric"});
-        $('#time-range').text(`${startTime} - ${endTime}`);
-
-        let startDate = new Date(program.startDate.date).toLocaleDateString('en-US');
-        let endDate = new Date(program.endDate.date).toLocaleDateString('en-US');
-        $('#date-range').text(`${startDate} - ${endDate}`);
+        let startDate = new Date(user.startDay.date).toLocaleDateString('en-US');
+        let dob = new Date(user.dob.date).toLocaleDateString('en-US');
+        $('#start_date').text(startDate);
+        $('#dob').text(dob);
 
         setupButtons(id);
 
@@ -305,32 +249,32 @@ require_once '../authorize.php';
 
     }
 
-    function cancel(id) {
-        let program = programs.find(it => it.id === id);
+    function removeStaff(id) {
+        let person = staff.find(it => it.id === id);
 
         Swal.fire({
-            title: `Cancel ${program.name}?`,
-            text: "This action cannot be undone!",
+            title: `Remove ${person.firstName} ${person.lastName}?`,
+            text: "This action is dangerous!",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonColor: '#3085d6',
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Yes, Cancel it!',
+            confirmButtonText: 'Remove',
             cancelButtonText: 'No, Go Back',
-            footer: '<small class="text-center">This will cancel registrations for this class and notify all participants.<br>' +
-                'The program will be retained for historical purposes.</small>'
+            footer: '<small class="text-center">This will revoke staff access for this user!<br>' +
+                'All data will be retained for historical purposes.</small>'
         }).then((result) => {
                 // TODO: Cancel Class HERE.
                 if (result.isConfirmed) {
                     Swal.fire({
-                        title: 'Cancelled!',
-                        text: 'Your program has been cancelled successfully.',
+                        title: 'Permission Revoked!',
+                        text: `${person.firstName} ${person.lastName}'s permission was revoked.`,
                         icon: 'success',
-                        timer: 1500,
+                        timer: 2000,
                         timerProgressBar: true
                     }).then(() => {
                         $('#detail-card').addClass('d-none');
-                        getPrograms();
+                        getStaff();
                     });
                 }
 

@@ -7,12 +7,22 @@
  */
 class User
 {
-    public function __construct(int $userID)
+
+    public int $id;
+    public string $email;
+    public string $firstName;
+    public string $lastName;
+    public int $status;
+    public string $indexed;
+    public bool $isStaff;
+
+    public function __construct()
     {
 
     }
 
-    static function register($classID){
+    static function register($classID)
+    {
         // TODO: Implement this function to allow users to register for classes.
 
         $mysql = new MySQLConnection();
@@ -24,7 +34,8 @@ class User
 
     }
 
-    function isFree($classID){
+    function isFree($classID)
+    {
         // TODO: Check to see if the user is registered for another class during this time.
     }
 
@@ -37,14 +48,49 @@ class User
 
         $result = mysqli_query($mysql->conn, $sql);
 
-        if($result) {
+        if ($result) {
             return $result->fetch_all();
         } else {
             return mysqli_error($mysql->conn);
         }
     }
 
-    // TODO: Steal getUser from auth.php
+    static function getUsers(int $page = 0): array
+    {
+        $pageLength = 20;
+        $mysql = new MySQLConnection();
+        $offset = $page * $pageLength;
+
+        $sql = "SELECT * FROM Participants LIMIT $offset, $pageLength;";
+        $result = mysqli_query($mysql->conn, $sql);
+
+        $res = array();
+
+        while ($obj = mysqli_fetch_object($result)) {
+            array_push($res, User::userFactory($obj));
+        }
+
+        return $res;
+    }
+
+    static function userFactory(object $input_user): User
+    {
+        if ($input_user->MembershipStatus == MembershipStatus::STAFF) {
+            $user = new Staff();
+            $user->fill($input_user);
+        } else {
+            $user = new User();
+        }
+
+        $user->id = $input_user->ID;
+        $user->indexed = $input_user->indexed;
+        $user->firstName = $input_user->FirstName;
+        $user->lastName = $input_user->LastName;
+        $user->status = $input_user->MembershipStatus;
+        $user->email = $input_user->Email;
+
+        return $user;
+    }
 
     // TODO: Create a function that save user to database.
 

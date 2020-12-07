@@ -75,7 +75,7 @@ class Program
             $sql = "UPDATE Programs SET Name = '$this->name', ShortDesc = '$this->shortDesc', DescFile = '$this->descFile', 
                     Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
                     Location = '$this->location', start_date = '$sDate', end_date = '$eDate', 
-                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = $this->indexed 
+                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = '$this->indexed' 
                     WHERE ID = $this->id";
         } else {
             $sql = "INSERT INTO Programs (NAME, DESCFILE, ShortDesc, CAPACITY, MEMBERFEE, NONMEMBERFEE, LOCATION, START_DATE, 
@@ -230,6 +230,20 @@ class Program
 
         return $this->save();
     }
+
+    static function editProgram(int $id = -1): bool
+    {
+        if ($id != -1) {
+            echo 'getting';
+            $program = Program::get($id);
+            return $program->createProgram();
+        }
+        else {
+            echo "Program ID was bad";
+            return false;
+        }
+    }
+
 
     public function getRoster()
     {

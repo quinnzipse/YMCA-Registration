@@ -3,6 +3,7 @@ set_include_path('/var/www/html');
 require_once 'authorize.php';
 require_once 'models/Program.php';
 require_once 'models/User.php';
+require_once 'models/Staff.php';
 
 //echo " -- GET -- ";
 //var_dump($_GET);
@@ -15,11 +16,19 @@ switch ($action) {
     case 'createProgram':
         $program = new Program();
         if (!$program->createProgram()) {
-            header("Location: /staff/addProgram.php?failed=1");
+            header("Location: /admin/programs/addProgram.php?failed=1");
             http_send_status(400);
             exit(400);
         }
-        header("Location: /staff/?programCreated=1");
+        header("Location: /admin/programs/?programCreated=1");
+        break;
+    case 'editProgram':
+        if (!Program::editProgram((int)$_POST['id'])) {
+            header("Location: /admin/programs/editProgram.php?p=" . $_POST['id'] . "&failed=1");
+            http_send_status(400);
+            exit(400);
+        }
+        header("Location: /admin/programs/?programEdited=1");
         break;
     case 'getRoster':
         $program = Program::get($_GET['programID'] ?? -1);
@@ -46,6 +55,10 @@ switch ($action) {
         $result = Program::getPrograms($_REQUEST['page'] ?? 0);
         echo json_encode($result);
         exit(200);
+    case 'get_staff':
+        $result = Staff::getStaff($_REQUEST['page'] ?? 0);
+        echo json_encode($result);
+        exit(200);
     case 'search_users':
         if (isset($_REQUEST['v'])) {
             $result = User::search($_REQUEST['v']);
@@ -53,9 +66,16 @@ switch ($action) {
             exit(200);
         }
         break;
+    case 'search_staff':
+        if (isset($_REQUEST['v'])) {
+            $result = Staff::search($_REQUEST['v']);
+            echo json_encode($result);
+            exit(200);
+        }
+        break;
     default:
         // bad request.
-        http_send_status(400);
+//        http_send_status(400);
         exit(400);
 }
 
