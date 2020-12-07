@@ -1,5 +1,8 @@
 <?php
 
+require_once 'MembershipStatus.php';
+require_once 'Staff.php';
+
 /**
  * Class User
  *
@@ -62,6 +65,24 @@ class User
         $offset = $page * $pageLength;
 
         $sql = "SELECT * FROM Participants LIMIT $offset, $pageLength;";
+        $result = mysqli_query($mysql->conn, $sql);
+
+        $res = array();
+
+        while ($obj = mysqli_fetch_object($result)) {
+            array_push($res, User::userFactory($obj));
+        }
+
+        return $res;
+    }
+
+    static function getNonStaff(int $page = 0): array
+    {
+        $pageLength = 20;
+        $mysql = new MySQLConnection();
+        $offset = $page * $pageLength;
+
+        $sql = "SELECT * FROM Participants WHERE MembershipStatus != 3 LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
 
         $res = array();
