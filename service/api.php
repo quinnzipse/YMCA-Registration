@@ -35,6 +35,15 @@ switch ($action) {
 
         echo json_encode($program->getRoster() ?? '');
         exit(200);
+
+    case 'getUserByID':
+        if (isset($_GET['id'])) {
+            $user = User::get($_GET['id']);
+            echo json_encode($user);
+            exit(200);
+        } else {
+            exit(400);
+        }
     case 'register':
         $programID = $_GET['programID'] ?? '';
         $mysql = new MySQLConnection();

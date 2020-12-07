@@ -7,8 +7,9 @@ require_once 'models/User.php' ?>
         .form-check-input.is-valid ~ .form-check-label, .was-validated .form-check-input:valid ~ .form-check-label {
             color: black !important;
         }
+
         .clickable:hover {
-            box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, .1) !important;
             transition: box-shadow 180ms ease-in-out;
             cursor: pointer;
         }
@@ -16,16 +17,21 @@ require_once 'models/User.php' ?>
 </head>
 <body>
 <?php include 'menu.php';
-$users = User::getNonStaff(); ?>
+if (isset($_GET['id'])) {
+    $user = User::get($_GET['id']);
+} else {
+    $users = User::getNonStaff();
+} ?>
 <main>
     <div class="container mb-5">
         <div class="row">
-            <div class="col-lg-6 col-md-8 offset-md-2 offset-lg-3 mt-5">
+            <div class="col-lg-6 col-md-8 offset-md-2 offset-lg-3 mt-5 <?php if (isset($_GET['id'])) echo 'd-none'; ?>"
+                 id="selector">
                 <h3>Select User to become Staff</h3>
                 <hr>
                 <?php
                 foreach ($users as $user) {
-                    echo '<div class="card my-3 clickable">
+                    echo '<div class="card my-3 clickable" onclick="select(' . $user->id . ')">
                     <div class="card-body">
                         <div class="card-text">
                             <h4>' . $user->firstName . ' ' . $user->lastName . '</h4>
@@ -36,7 +42,7 @@ $users = User::getNonStaff(); ?>
                 }
                 ?>
             </div>
-            <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2 d-none">
+            <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2 d-none" id="form-col">
                 <form action="/service/api.php?action=createProgram" class="mt-2 needs-validation" method="post"
                       novalidate>
                     <br>
@@ -243,6 +249,24 @@ $users = User::getNonStaff(); ?>
         else $('#check_message').removeClass('d-block');
 
         return checked;
+    }
+
+    async function select(id) {
+        $('#form-col').removeClass('d-none');
+        $('#selector').addClass('d-none');
+
+        const response = await fetch("/service/api.php?action=getUserByID&id=" + id);
+
+        if (!response) {
+            console.error("Bad Response");
+            return;
+        }
+
+        const staff = await response.json();
+
+        console.log(staff);
+        $('#')
+
     }
 
 </script>

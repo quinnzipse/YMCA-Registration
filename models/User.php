@@ -37,6 +37,26 @@ class User
 
     }
 
+    public static function get(int $id)
+    {
+        $mysql = new MySQLConnection();
+
+        $sql = "SELECT * FROM Participants WHERE ID = $id";
+        $result = mysqli_query($mysql->conn, $sql);
+
+        $res = array();
+
+        if(!$result){
+            return $res;
+        }
+
+        while ($obj = mysqli_fetch_object($result)) {
+            array_push($res, User::userFactory($obj));
+        }
+
+        return $res;
+    }
+
     function isFree($classID)
     {
         // TODO: Check to see if the user is registered for another class during this time.
