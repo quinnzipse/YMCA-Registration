@@ -13,6 +13,18 @@ require_once 'models/Staff.php';
 // ANYTHING in this file will require the user to be logged in.
 $action = $_GET['action'] ?? '';
 switch ($action) {
+    case 'addStaff':
+        if (isset($_POST['id'])) {
+            // Consider reworking this to only return one element...
+            $user = User::get($_POST['id']);
+            if (!$user[0]->makeStaff()) {
+                header("Location: /admin/staff/addStaff.php?failed=1");
+                http_send_status(400);
+                exit(400);
+            }
+            header("Location: /admin/staff/?staffAdded=1");
+        }
+        break;
     case 'createProgram':
         $program = new Program();
         if (!$program->createProgram()) {

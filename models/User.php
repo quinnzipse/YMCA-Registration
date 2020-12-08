@@ -46,7 +46,7 @@ class User
 
         $res = array();
 
-        if(!$result){
+        if (!$result) {
             return $res;
         }
 
@@ -131,6 +131,28 @@ class User
         $user->email = $input_user->Email;
 
         return $user;
+    }
+
+    function makeStaff(): bool
+    {
+        $staff = new Staff();
+        $staff->status = MembershipStatus::STAFF;
+        $staff->firstName = $this->firstName;
+        $staff->lastName = $this->lastName;
+        $staff->isStaff = true;
+        $staff->indexed = $this->indexed;
+        $staff->id = $this->id;
+        $staff->email = $this->email;
+
+        $staff->phoneNumber = $_POST['phone'];
+        $staff->middleInit = $_POST['middle'];
+        $staff->salary = $_POST['salary'];
+        $staff->address = $_POST['address'];
+        $staff->ssn = $_POST['ssn'];
+        $staff->startDay = date_create($_POST['start_date']);
+        $staff->dob = date_create($_POST['dob']);
+
+        return $staff->save();
     }
 
     // TODO: Create a function that save user to database.

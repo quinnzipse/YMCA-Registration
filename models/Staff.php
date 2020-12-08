@@ -72,4 +72,17 @@ class Staff extends User
             return mysqli_error($mysql->conn);
         }
     }
+
+    function save(): bool
+    {
+        $mysql = new MySQLConnection();
+
+        $dob = $this->dob->format('Y-m-d');
+        $startDay = $this->startDay->format('Y-m-d');
+
+        $sql = "INSERT INTO Staff VALUES $this->id, '$this->ssn', '$dob', '$this->middleInit', 
+                         '$startDay', $this->salary, '$this->phoneNumber', '$this->address' ;";
+
+        return mysqli_query($mysql->conn, $sql);
+    }
 }
