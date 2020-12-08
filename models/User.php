@@ -37,24 +37,15 @@ class User
 
     }
 
-    public static function get(int $id)
+    public static function get(int $id): User
     {
         $mysql = new MySQLConnection();
 
         $sql = "SELECT * FROM Participants WHERE ID = $id";
         $result = mysqli_query($mysql->conn, $sql);
 
-        $res = array();
-
-        if (!$result) {
-            return $res;
-        }
-
-        while ($obj = mysqli_fetch_object($result)) {
-            array_push($res, User::userFactory($obj));
-        }
-
-        return $res;
+        $obj = mysqli_fetch_object($result);
+        return User::userFactory($obj);
     }
 
     function isFree($classID)

@@ -38,12 +38,14 @@ $users = User::getNonStaff();
                 </div>';
                 }
                 ?>
+                <hr>
+                <button class="btn btn-secondary" onclick="window.location = '/admin/staff'; ">Cancel</button>
             </div>
             <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2 d-none" id="form-col">
                 <form action="/service/api.php?action=addStaff" class="mt-2 needs-validation" method="post"
                       novalidate>
                     <br>
-                    <h2 class="font-weight-light mt-2">Add a Staff Member</h2>
+                    <h3 class="mt-2">Add a Staff Member</h3>
                     <hr>
                     <label for="id" class="sr-only">id
                         <input class="form-control" id="id" name="id" hidden readonly></label>
@@ -61,9 +63,12 @@ $users = User::getNonStaff();
                                 <label for="ssn">SSN</label>
                                 <input class="form-control" name="ssn" id="ssn" type="password" maxlength="9"
                                        minlength="9" required>
+                                <div class="invalid-feedback">
+                                    SSN is Required!
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3 col-xl-2">
                             <div class="form-group">
                                 <label for="middle">Middle Initial</label>
                                 <input class="form-control" name="middle" type="text" id="middle" maxlength="1"
@@ -111,9 +116,9 @@ $users = User::getNonStaff();
                                         <span class="input-group-text">$</span>
                                     </div>
                                     <input class="form-control" name="salary" id="salary" type="number" required>
-                                </div>
-                                <div class="invalid-feedback">
-                                    Invalid Salary.
+                                    <div class="invalid-feedback">
+                                        What are we paying them?
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +135,7 @@ $users = User::getNonStaff();
                         </div>
                     </div>
                     <button class="btn btn-primary" type="submit">Add Staff!</button>
-                    <a class="btn btn-outline-secondary" type="button" href="/admin/staff/">Cancel</a>
+                    <button class="btn btn-outline-secondary" type="button" onclick="goBack()">Back</button>
                 </form>
             </div>
         </div>
@@ -160,11 +165,15 @@ $users = User::getNonStaff();
             return;
         }
 
-        let staff = await response.json();
-        staff = staff[0];
+        const staff = await response.json();
 
         $('#name').val(staff.firstName + " " + staff.lastName);
         $('#id').val(staff.id);
+    }
+
+    function goBack(){
+        $('#form-col').addClass('d-none');
+        $('#selector').removeClass('d-none');
     }
 
 </script>

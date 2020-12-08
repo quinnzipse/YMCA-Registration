@@ -14,12 +14,14 @@ require_once 'models/Staff.php';
 $action = $_GET['action'] ?? '';
 switch ($action) {
     case 'addStaff':
+        echo 'addStaff';
         if (isset($_POST['id'])) {
+            echo 'hasID';
             // Consider reworking this to only return one element...
             $user = User::get($_POST['id']);
-            if (!$user[0]->makeStaff()) {
+            var_dump($user);
+            if (!$user->makeStaff()) {
                 header("Location: /admin/staff/addStaff.php?failed=1");
-                http_send_status(400);
                 exit(400);
             }
             header("Location: /admin/staff/?staffAdded=1");

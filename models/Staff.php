@@ -1,5 +1,6 @@
 <?php
 include_once 'MembershipStatus.php';
+include_once 'User.php';
 
 class Staff extends User
 {
@@ -80,9 +81,22 @@ class Staff extends User
         $dob = $this->dob->format('Y-m-d');
         $startDay = $this->startDay->format('Y-m-d');
 
-        $sql = "INSERT INTO Staff VALUES $this->id, '$this->ssn', '$dob', '$this->middleInit', 
-                         '$startDay', $this->salary, '$this->phoneNumber', '$this->address' ;";
+        $sql = "INSERT INTO Staff VALUES ($this->id, '$this->ssn', '$dob', '$this->middleInit', 
+                         '$startDay', $this->salary, '$this->phoneNumber', '$this->address');";
+        $result = mysqli_query($mysql->conn, $sql);
 
-        return mysqli_query($mysql->conn, $sql);
+        if (!$result) {
+            echo mysqli_error($mysql->conn);
+            return false;
+        }
+
+        $sql = "UPDATE Participants SET MembershipStatus = 3 WHERE ID = $this->id";
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if (!$result) {
+            echo mysqli_error($mysql->conn);
+        }
+
+        return $result;
     }
 }

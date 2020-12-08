@@ -137,8 +137,8 @@ require_once '../authorize.php';
     });
 
     <?php
-    if (isset($_REQUEST['programCreated'])) echo "Toast.fire({title: 'Program Created! 🎉'});";
-    if (isset($_REQUEST['programEdited'])) echo "Toast.fire({title: 'Program Updated!'});";
+    if (isset($_REQUEST['staffAdded'])) echo "Toast.fire({title: 'Staff Member Added! 🎉'});";
+    if (isset($_REQUEST['staffEdited'])) echo "Toast.fire({title: 'Staff Details Updated!'});";
     ?>
 
     const staff = [];
