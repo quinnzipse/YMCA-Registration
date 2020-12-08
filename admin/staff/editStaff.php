@@ -23,41 +23,41 @@ if (isset($_REQUEST['s'])) {
     <div class="container mb-5">
         <div class="row">
             <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2">
-                <form action="/service/api.php?action=editProgram" class="mt-2 needs-validation" method="post"
+                <form action="/service/api.php?action=addStaff" class="mt-2 needs-validation" method="post"
                       novalidate>
-                    <label class="sr-only"><input type="number" value="<?php echo $_REQUEST['p'] ?>" name="id"
-                                                  hidden></label>
                     <br>
-                    <h2 class="font-weight-light mt-2">Edit Staff Details</h2>
+                    <h3 class="mt-2">Edit a Staff Member</h3>
                     <hr>
+                    <label for="id" class="sr-only">id
+                        <input id="id" name="id" hidden readonly>
+                    </label>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="name">Program Name</label>
-                                <input class="form-control" name="name" id="name" maxlength="50" minlength="3"
-                                       value="<?php echo $staff->name ?>" required>
-                                <div class="invalid-feedback">Don't forget a catchy name!</div>
-                                <div class="valid-feedback">Looks good!</div>
+                                <label for="name">Name</label>
+                                <input class="form-control" id="name"
+                                       value="<?php echo "$staff->firstName $staff->lastName" ?>" maxlength="50"
+                                       minlength="3" readonly/>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <label for="location">Location</label>
-                                <input class="form-control" name="location" id="location" maxlength="50"
-                                       value="<?php echo $staff->location ?>" required>
-                                <div class="invalid-feedback">Where will you be holding this program?</div>
-                                <div class="valid-feedback">Nice spot!</div>
+                                <label for="ssn">SSN</label>
+                                <input class="form-control" name="ssn" id="ssn" type="password" maxlength="9"
+                                       value="<?php echo $staff->ssn; ?>" minlength="9" required/>
+                                <div class="invalid-feedback">
+                                    SSN is Required!
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3 col-xl-2">
                             <div class="form-group">
-                                <label for="capacity">Capacity</label>
-                                <input class="form-control" name="capacity" type="number"
-                                       value="<?php echo $staff->capacity ?>" id="capacity" min="0"
-                                       required>
-                                <div class="invalid-feedback">How many people can sign up?</div>
+                                <label for="middle">Middle Initial</label>
+                                <input class="form-control" name="middle" type="text" id="middle" maxlength="1"
+                                       minlength="1" required value="<?php echo $staff->middleInit; ?>">
+                                <div class="invalid-feedback">Middle Initial?</div>
                                 <div class="valid-feedback">Perfect!</div>
                             </div>
                         </div>
@@ -65,9 +65,30 @@ if (isset($_REQUEST['s'])) {
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input class="form-control" name="phone" type="tel" id="phone" maxlength="10"
+                                       minlength="10" value="<?php echo $staff->phoneNumber; ?>" required/>
+                                <div class="invalid-feedback">What's the phone number?</div>
+                                <div class="valid-feedback">Perfect!</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dob">DOB</label>
+                                <input class="form-control" name="dob" id="dob" type="date" required
+                                       value="<?php echo $staff->dob->format('Y-m-d'); ?>">
+                                <div class="invalid-feedback">
+                                    Invalid Date of Birth.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="start_date">Start Date</label>
-                                <input class="form-control" name="start_date" id="start_date"
-                                       value="<?php echo $staff->startDate->format('Y-m-d') ?>" type="date" required>
+                                <input class="form-control" name="start_date" id="start_date" type="date"
+                                       required value="<?php echo $staff->startDay->format('Y-m-d'); ?>">
                                 <div class="invalid-feedback">
                                     Invalid Start Date.
                                 </div>
@@ -75,61 +96,16 @@ if (isset($_REQUEST['s'])) {
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="end_date">End Date</label>
-                                <input class="form-control" name="end_date" id="end_date"
-                                       value="<?php echo $staff->endDate->format('Y-m-d') ?>" type="date" required>
-                                <div class="invalid-feedback">
-                                    Invalid End Date.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="start_time">Start Time</label>
-                                <input class="form-control" name="start_time" id="start_time"
-                                       value="<?php echo $staff->startTime->format('H:i:s') ?>" type="time" required>
-                                <div class="invalid-feedback">
-                                    Invalid Start Time.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="end_time">End Time</label>
-                                <input class="form-control" name="end_time" id="end_time"
-                                       value="<?php echo $staff->endTime->format('H:i:s') ?>" type="time" required>
-                                <div class="invalid-feedback">
-                                    Invalid End Time.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="mem_price">Member Price</label>
+                                <label for="salary">Salary</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">$</span>
                                     </div>
-                                    <input class="form-control rounded-right" name="mem_price" id="mem_price"
-                                           type="number" min="0" value="<?php echo $staff->memberFee ?>"
-                                           required>
-                                    <div class="invalid-feedback">Please enter a member price.</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="non_mem_price">Non-Member Price</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">$</span>
+                                    <input class="form-control" name="salary" id="salary" type="number" required
+                                           value="<?php echo $staff->salary; ?>">
+                                    <div class="invalid-feedback">
+                                        What are we paying them?
                                     </div>
-                                    <input class="form-control rounded-right" name="non_mem_price"
-                                           id="non_mem_price" type="number" value="<?php echo $staff->nonMemberFee ?>"
-                                           min="0" required>
-                                    <div class="invalid-feedback">Please enter a non-member price.</div>
                                 </div>
                             </div>
                         </div>
@@ -137,15 +113,17 @@ if (isset($_REQUEST['s'])) {
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="description">Description</label>
-                                <textarea class="form-control" id="description"
-                                          name="description" rows="3"
-                                          maxlength="100"><?php echo $staff->shortDesc ?></textarea>
+                                <label for="address">Address</label>
+                                <input class="form-control" name="address" id="address" type="text" required
+                                       value="<?php echo $staff->address; ?>"/>
+                                <div class="invalid-feedback">
+                                    Invalid Address.
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" type="submit">Save Changes</button>
-                    <a class="btn btn-outline-secondary" type="button" href="/admin/programs/index.php">Cancel</a>
+                    <button class="btn btn-primary" type="submit">Make Changes</button>
+                    <a class="btn btn-outline-secondary" type="button" href="/admin/staff/">Cancel</a>
                 </form>
             </div>
         </div>

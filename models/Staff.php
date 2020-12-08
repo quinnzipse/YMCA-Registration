@@ -99,4 +99,20 @@ class Staff extends User
 
         return $result;
     }
+
+    public static function get(int $id): User
+    {
+        $mysql = new MySQLConnection();
+
+        $sql = "SELECT * FROM Participants as p INNER JOIN Staff as s ON s.ID = p.ID WHERE p.ID = $id AND MembershipStatus = " . MembershipStatus::STAFF;
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if (!$result) {
+            echo mysqli_error($mysql->conn);
+        }
+
+        $obj = mysqli_fetch_object($result);
+        return User::userFactory($obj);
+    }
+
 }
