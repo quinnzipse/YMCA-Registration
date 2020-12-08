@@ -214,8 +214,8 @@ require_once '../authorize.php';
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    function formatPhoneNumber(number){
-        return "(" +  number.substr(0, 3) + ") " + number.substr(3, 3) + "-" + number.substring(6);
+    function formatPhoneNumber(number) {
+        return "(" + number.substr(0, 3) + ") " + number.substr(3, 3) + "-" + number.substring(6);
     }
 
     function get(id) {
@@ -264,23 +264,38 @@ require_once '../authorize.php';
             footer: '<small class="text-center">This will revoke staff access for this user!<br>' +
                 'All data will be retained for historical purposes.</small>'
         }).then((result) => {
-                // TODO: Cancel Class HERE.
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Permission Revoked!',
-                        text: `${person.firstName} ${person.lastName}'s permission was revoked.`,
-                        icon: 'success',
-                        timer: 2000,
-                        timerProgressBar: true
-                    }).then(() => {
-                        $('#detail-card').addClass('d-none');
-                        getStaff();
+                    deleteStaff(id).then((val) => {
+                        if (val) {
+                            Swal.fire({
+                                title: 'Permission Revoked!',
+                                text: `${person.firstName} ${person.lastName}'s permission was revoked.`,
+                                icon: 'success',
+                                timer: 2000,
+                                timerProgressBar: true
+                            }).then(() => {
+                                $('#detail-card').addClass('d-none');
+                                getStaff();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Failed!',
+                                text: `An Error Occurred!`,
+                                icon: 'danger',
+                                timer: 2000,
+                                timerProgressBar: true
+                            });
+                        }
+
                     });
                 }
-
-
             }
         )
+    }
+
+    async function deleteStaff(id) {
+        let response = await fetch(`/service/api.php?action=revoke_access&id=${id}`);
+        return response.ok;
     }
 
 </script>

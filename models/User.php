@@ -128,12 +128,7 @@ class User
     {
         $staff = new Staff();
         $staff->status = MembershipStatus::STAFF;
-        $staff->firstName = $this->firstName;
-        $staff->lastName = $this->lastName;
-        $staff->isStaff = true;
-        $staff->indexed = $this->indexed;
         $staff->id = $this->id;
-        $staff->email = $this->email;
 
         $staff->phoneNumber = $_POST['phone'];
         $staff->middleInit = $_POST['middle'];
@@ -143,7 +138,7 @@ class User
         $staff->startDay = date_create($_POST['start_date']);
         $staff->dob = date_create($_POST['dob']);
 
-        return $staff->save();
+        return $staff->save(Staff::exists($this->id));
     }
 
     // TODO: Create a function that save user to database.

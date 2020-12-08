@@ -146,7 +146,7 @@ class Staff extends User
         return $this->save(false);
     }
 
-    public static function get(int $id): User
+    public static function get(int $id): Staff
     {
         $mysql = new MySQLConnection();
 
@@ -159,7 +159,35 @@ class Staff extends User
 
         $obj = mysqli_fetch_object($result);
 
-        return User::userFactory($obj);
+        return Staff::staffFactory($obj);
+    }
+
+    static function exists(int $id): bool
+    {
+        $mysql = new MySQLConnection();
+
+        $sql = "SELECT * FROM Participants as p INNER JOIN Staff as s ON s.ID = p.ID WHERE p.ID = $id AND MembershipStatus = " . MembershipStatus::STAFF;
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if (!$result) {
+            echo mysqli_error($mysql->conn);
+        }
+
+        return $result->num_rows > 0;
+    }
+
+    static function staffFactory(object $input_user): Staff
+    {
+        $user = new Staff();
+        $user->fill($input_user);
+        $user->id = $input_user->ID;
+        $user->indexed = $input_user->indexed;
+        $user->firstName = $input_user->FirstName;
+        $user->lastName = $input_user->LastName;
+        $user->status = $input_user->MembershipStatus;
+        $user->email = $input_user->Email;
+
+        return $user;
     }
 
 }

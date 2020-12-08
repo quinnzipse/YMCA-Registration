@@ -22,6 +22,7 @@ switch ($action) {
             var_dump($user);
             if (!$user->makeStaff()) {
                 header("Location: /admin/staff/addStaff.php?failed=1");
+                http_response_code(400);
                 exit(400);
             }
             header("Location: /admin/staff/?staffAdded=1");
@@ -31,6 +32,7 @@ switch ($action) {
         $program = new Program();
         if (!$program->createProgram()) {
             header("Location: /admin/programs/addProgram.php?failed=1");
+            http_response_code(400);
             exit(400);
         }
         header("Location: /admin/programs/?programCreated=1");
@@ -38,13 +40,15 @@ switch ($action) {
     case 'editProgram':
         if (!Program::editProgram((int)$_POST['id'])) {
             header("Location: /admin/programs/editProgram.php?p=" . $_POST['id'] . "&failed=1");
+            http_response_code(400);
             exit(400);
         }
         header("Location: /admin/programs/?programEdited=1");
         break;
     case 'editStaff':
         if (!Staff::editStaff((int)$_POST['id'])) {
-//            header("Location: /admin/staff/editStaff.php?s=" . $_POST['id'] . "&failed=1");
+            header("Location: /admin/staff/editStaff.php?s=" . $_POST['id'] . "&failed=1");
+            http_response_code(400);
             exit(400);
         }
         header("Location: /admin/staff/?staffEdited=1");
@@ -101,9 +105,18 @@ switch ($action) {
             exit(200);
         }
         break;
+    case 'revoke_access':
+        if (isset($_REQUEST['id'])) {
+            $staff = Staff::get((int)$_REQUEST['id']);
+            if (!$staff->revokeStaffAccess()) {
+                http_response_code(400);
+                exit(400);
+            }
+        }
+        exit(200);
     default:
         // bad request.
-//        http_send_status(400);
+        http_response_code(400);
         exit(400);
 }
 
