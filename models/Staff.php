@@ -12,6 +12,22 @@ class Staff extends User
     public string $phoneNumber;
     public string $address;
 
+    public static function editStaff(int $id): bool
+    {
+        var_dump($id);
+
+        $staff = self::get($id);
+        $staff->phoneNumber = $_POST['phone'];
+        $staff->middleInit = $_POST['middle'];
+        $staff->salary = $_POST['salary'];
+        $staff->address = $_POST['address'];
+        $staff->ssn = $_POST['ssn'];
+        $staff->startDay = date_create($_POST['start_date']);
+        $staff->dob = date_create($_POST['dob']);
+
+        return $staff->save(false);
+    }
+
     /**
      * Given a User object, fill in the staff only fields.
      *
@@ -74,30 +90,60 @@ class Staff extends User
         }
     }
 
-    function save(): bool
+    function save($new = true): bool
     {
         $mysql = new MySQLConnection();
 
         $dob = $this->dob->format('Y-m-d');
         $startDay = $this->startDay->format('Y-m-d');
 
-        $sql = "INSERT INTO Staff VALUES ($this->id, '$this->ssn', '$dob', '$this->middleInit', 
+        if ($new) {
+
+            $sql = "INSERT INTO Staff VALUES ($this->id, '$this->ssn', '$dob', '$this->middleInit', 
                          '$startDay', $this->salary, '$this->phoneNumber', '$this->address');";
-        $result = mysqli_query($mysql->conn, $sql);
+            $result = mysqli_query($mysql->conn, $sql);
 
-        if (!$result) {
-            echo mysqli_error($mysql->conn);
-            return false;
+            if (!$result) {
+                echo mysqli_error($mysql->conn);
+                return false;
+            }
+
+            $sql = "UPDATE Participants SET MembershipStatus = 3 WHERE ID = $this->id";
+            $result = mysqli_query($mysql->conn, $sql);
+
+        } else {
+            $sql = "UPDATE Staff SET SSN = '$this->ssn', DOB = '$dob', middleInitial = '$this->middleInit', 
+                         StartDay = '$startDay', Salary = $this->salary, PhoneNumber = '$this->phoneNumber',
+                         Address = '$this->address' WHERE ID = $this->id;";
+            $result = mysqli_query($mysql->conn, $sql);
+
+            if (!$result) {
+                echo mysqli_error($mysql->conn);
+                return false;
+            }
+
+            $sql = "UPDATE Participants SET MembershipStatus = $this->status WHERE ID = $this->id";
+            $result = mysqli_query($mysql->conn, $sql);
         }
-
-        $sql = "UPDATE Participants SET MembershipStatus = 3 WHERE ID = $this->id";
-        $result = mysqli_query($mysql->conn, $sql);
 
         if (!$result) {
             echo mysqli_error($mysql->conn);
         }
 
         return $result;
+    }
+
+    /**
+     * Revokes Staff Access but retains the staff information.
+     *
+     * @return bool true on success, false on failure.
+     */
+    public function revokeStaffAccess(): bool
+    {
+        $this->isStaff = false;
+        $this->status = MembershipStatus::NONMEMBER;
+
+        return $this->save(false);
     }
 
     public static function get(int $id): User
@@ -112,6 +158,7 @@ class Staff extends User
         }
 
         $obj = mysqli_fetch_object($result);
+
         return User::userFactory($obj);
     }
 

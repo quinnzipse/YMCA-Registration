@@ -34,22 +34,22 @@ require_once '../authorize.php';
                                 <h4 class="lead"><strong>Contact Info:</strong></h4>
 
                                 <small><strong>Email: </strong></small>
-                                <a id="email" href="mailto:qzipse@outlook.com">qzipse@outlook.com</a>
+                                <a id="email" href=""></a>
                                 <br>
 
                                 <small><strong>Phone:</strong></small>
-                                <span id="phoneNumber">(507) 273-6959</span>
+                                <span id="phoneNumber"></span>
                                 <br>
                             </div>
                             <div class="col-lg-6">
                                 <h4 class="lead"><strong>Work Info:</strong></h4>
 
                                 <small><strong>Start Date: </strong></small>
-                                <span class="mt-1" id="startDate">12/7/2020</span>
+                                <span class="mt-1" id="startDate"></span>
                                 <br>
 
                                 <small><strong>Salary:</strong></small>
-                                <span>$<span id="salary">100,000</span></span>
+                                <span>$<span id="salary"></span></span>
                                 <br>
                             </div>
 
@@ -58,15 +58,15 @@ require_once '../authorize.php';
                         <h4 class="lead mt-3"><strong>Personal Info:</strong></h4>
 
                         <small><strong title="Date of Birth">DOB: </strong></small>
-                        <span class="mt-1" id="dob">5/11/2001</span>
+                        <span class="mt-1" id="dob"></span>
                         <br>
 
                         <small><strong>SSN (Last 4): </strong></small>
-                        <span class="mt-1">XXX-XX-<span id="ssn">2042</span></span>
+                        <span class="mt-1">XXX-XX-<span id="ssn"></span></span>
                         <br>
 
                         <small><strong>Address:</strong></small>
-                        <span id="address">24795 555th St, West Concord, MN 55985</span>
+                        <span id="address"></span>
                         <br>
 
                     </div>

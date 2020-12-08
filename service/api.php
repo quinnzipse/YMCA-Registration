@@ -31,7 +31,6 @@ switch ($action) {
         $program = new Program();
         if (!$program->createProgram()) {
             header("Location: /admin/programs/addProgram.php?failed=1");
-            http_send_status(400);
             exit(400);
         }
         header("Location: /admin/programs/?programCreated=1");
@@ -39,10 +38,16 @@ switch ($action) {
     case 'editProgram':
         if (!Program::editProgram((int)$_POST['id'])) {
             header("Location: /admin/programs/editProgram.php?p=" . $_POST['id'] . "&failed=1");
-            http_send_status(400);
             exit(400);
         }
         header("Location: /admin/programs/?programEdited=1");
+        break;
+    case 'editStaff':
+        if (!Staff::editStaff((int)$_POST['id'])) {
+//            header("Location: /admin/staff/editStaff.php?s=" . $_POST['id'] . "&failed=1");
+            exit(400);
+        }
+        header("Location: /admin/staff/?staffEdited=1");
         break;
     case 'getRoster':
         $program = Program::get($_GET['programID'] ?? -1);

@@ -23,13 +23,13 @@ if (isset($_REQUEST['s'])) {
     <div class="container mb-5">
         <div class="row">
             <div class="col-lg-8 col-md-10 offset-md-1 offset-lg-2">
-                <form action="/service/api.php?action=addStaff" class="mt-2 needs-validation" method="post"
+                <form action="/service/api.php?action=editStaff" class="mt-2 needs-validation" method="post"
                       novalidate>
                     <br>
                     <h3 class="mt-2">Edit a Staff Member</h3>
                     <hr>
                     <label for="id" class="sr-only">id
-                        <input id="id" name="id" hidden readonly>
+                        <input id="id" name="id" value="<?php echo $staff->id ?>" hidden readonly>
                     </label>
                     <div class="row">
                         <div class="col-md-12">
@@ -46,7 +46,7 @@ if (isset($_REQUEST['s'])) {
                             <div class="form-group">
                                 <label for="ssn">SSN</label>
                                 <input class="form-control" name="ssn" id="ssn" type="password" maxlength="9"
-                                       value="<?php echo $staff->ssn; ?>" minlength="9" required/>
+                                       value="<?php echo $staff->ssn; ?>" minlength="9" required autocomplete="off"/>
                                 <div class="invalid-feedback">
                                     SSN is Required!
                                 </div>
@@ -134,45 +134,12 @@ if (isset($_REQUEST['s'])) {
     let form = document.getElementsByClassName('needs-validation')[0];
     // Loop over them and prevent submission
     form.addEventListener('submit', function (event) {
-        let checked = validateChecks();
-        if (form.checkValidity() === false || !checked) {
+        if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
         }
         form.classList.add('was-validated');
     }, false);
-
-    let startDate = $('#start_date');
-    let endDate = $('#end_date');
-    let startTime = $('#start_time');
-    let endTime = $('#end_time');
-
-    startDate[0].addEventListener('change', () => endDate.prop('min', startDate.val()));
-    endDate[0].addEventListener('change', () => startDate.prop('max', endDate.val()));
-    startTime[0].addEventListener('change', () => endTime.prop('min', addMins(startTime.val(), 15)));
-    endTime[0].addEventListener('change', () => startTime.prop('max', endTime.val()));
-
-    function addMins(t, mins) {
-        let d = new Date();
-
-        d.setHours(Number(t.substr(0, t.indexOf(":"))));
-        d.setMinutes(Number(t.substr(t.indexOf(":") + 1)) + mins);
-
-        return d.toTimeString().substr(0, 5);
-    }
-
-    function validateChecks() {
-        let checked = false;
-
-        $('input[type=checkbox]').each((i, val) => {
-            if (val.checked) checked = true;
-        });
-
-        if (!checked) $('#check_message').addClass('d-block');
-        else $('#check_message').removeClass('d-block');
-
-        return checked;
-    }
 
 </script>
 </body>
