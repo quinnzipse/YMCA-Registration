@@ -59,7 +59,7 @@ class Staff extends User
         $res = array();
 
         while ($obj = mysqli_fetch_object($result)) {
-            array_push($res, User::userFactory($obj));
+            array_push($res, User::userFactory($obj, true));
         }
 
         return $res;
@@ -79,7 +79,7 @@ class Staff extends User
             $output = array();
 
             while ($row = mysqli_fetch_object($result)) {
-                array_push($output, User::userFactory($row));
+                array_push($output, User::userFactory($row, true));
             }
 
             return $output;

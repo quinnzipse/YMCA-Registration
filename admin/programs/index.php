@@ -229,6 +229,7 @@ require_once '../authorize.php';
     }
 
     function generateLine(val) {
+        if (val.inactive == 1) return '';
         programs.push(val);
 
         let startDate = new Date(val['startDate']['date']).toLocaleDateString("en-US");
@@ -319,17 +320,28 @@ require_once '../authorize.php';
             footer: '<small class="text-center">This will cancel registrations for this class and notify all participants.<br>' +
                 'The program will be retained for historical purposes.</small>'
         }).then((result) => {
-                // TODO: Cancel Class HERE.
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Cancelled!',
-                        text: 'Your program has been cancelled successfully.',
-                        icon: 'success',
-                        timer: 1500,
-                        timerProgressBar: true
-                    }).then(() => {
-                        $('#detail-card').addClass('d-none');
-                        getPrograms();
+                    fetch('/service/api.php?action=cancel_program&id=' + id).then((val) => {
+                        if (val.ok) {
+                            Swal.fire({
+                                title: 'Cancelled!',
+                                text: 'Your program has been cancelled successfully.',
+                                icon: 'success',
+                                timer: 1500,
+                                timerProgressBar: true
+                            }).then(() => {
+                                $('#detail-card').addClass('d-none');
+                                getPrograms();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Please try again.',
+                                icon: 'warning',
+                                timer: 1500,
+                                timerProgressBar: true
+                            });
+                        }
                     });
                 }
 

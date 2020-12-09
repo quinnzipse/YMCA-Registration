@@ -24,6 +24,23 @@ class Program
     {
     }
 
+    /**
+     * returns how many people are registered for program.
+     */
+    function programCount(): int
+    {
+        $mysql = new MySQLConnection();
+        $sql = "SELECT COUNT(*) AS people FROM Participant_Programs WHERE ProgramID = $this->id AND status = 0";
+
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if(!$result){
+            mysqli_error($mysql->conn);
+        }
+
+        return mysqli_fetch_assoc($result)['people'];
+    }
+
     static function getPrograms(int $page = 0): array
     {
         $pageLength = 20;
@@ -40,6 +57,12 @@ class Program
         }
 
         return $res;
+    }
+
+    function disableProgram(): bool
+    {
+        $this->inactive = true;
+        return $this->save();
     }
 
     function isConflicting(Program $other): bool
@@ -75,17 +98,17 @@ class Program
         $eDate = $this->endDate->format('Y-m-d');
 
         if ($result['C'] == 1) {
+            $inactive = $this->inactive ? 1 : 0;
             $sql = "UPDATE Programs SET Name = '$this->name', ShortDesc = '$this->shortDesc', DescFile = '$this->descFile', 
                     Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
                     Location = '$this->location', start_date = '$sDate', end_date = '$eDate', 
-                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = '$this->indexed', inactive = 0
+                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = '$this->indexed', inactive = $inactive
                     WHERE ID = $this->id";
         } else {
-            $inactive = $this->inactive ? 1 : 0;
             $sql = "INSERT INTO Programs (NAME, DESCFILE, ShortDesc, CAPACITY, MEMBERFEE, NONMEMBERFEE, LOCATION, START_DATE, 
                       END_DATE, START_TIME, END_TIME, DAY_OF_WEEK, indexed, inactive) VALUES ('$this->name', '$this->descFile', '$this->shortDesc',
                       $this->capacity, $this->memberFee, $this->nonMemberFee, '$this->location', '$sDate', 
-                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek, '$this->indexed', $inactive)";
+                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek, '$this->indexed', 0)";
         }
 
         $result = mysqli_query($mysql->conn, $sql);
@@ -116,13 +139,13 @@ class Program
         return $program;
     }
 
-    static function getParticipantProgram(int $user): array
+    static function getParticipantProgram(int $user, int $status = 0): array
     {
         $result = array();
 
         $mysql = new MySQLConnection();
 
-        $sql = "SELECT ProgramID FROM Participant_Programs WHERE ParticipantID='$user';";
+        $sql = "SELECT ProgramID FROM Participant_Programs WHERE ParticipantID='$user' AND status='$status';";
 
         $programs = mysqli_query($mysql->conn, $sql)->fetch_all(MYSQLI_NUM);
         $prog = null;

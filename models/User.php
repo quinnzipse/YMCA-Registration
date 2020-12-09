@@ -18,23 +18,29 @@ class User
     public int $status;
     public string $indexed;
     public bool $isStaff;
+    public bool $isInactive;
 
     public function __construct()
     {
 
     }
 
-    static function register($classID)
+    public function disableUser(): bool
     {
-        // TODO: Implement this function to allow users to register for classes.
+        $this->isInactive = true;
 
-        $mysql = new MySQLConnection();
-        $sql = "SELECT COUNT(*) FROM Participant_Programs";
-        $auth = new Auth();
-        $u = $auth->getCurrentUser();
+        return $this->save();
+    }
 
-        $sql = "INSERT INTO Participant_Programs (ParticipantID, ProgramID) VALUES ($u->userID, $classID)";
+    public static function edit(int $id): bool
+    {
+        $user = User::get($id);
+        $user->firstName = $_REQUEST['first'];
+        $user->lastName = $_REQUEST['last'];
+        $user->email = $_REQUEST['email'];
+        $user->status = $_REQUEST['status'];
 
+        return $user->save();
     }
 
     public static function get(int $id): User
@@ -75,7 +81,7 @@ class User
         $mysql = new MySQLConnection();
         $offset = $page * $pageLength;
 
-        $sql = "SELECT * FROM Participants LIMIT $offset, $pageLength;";
+        $sql = "SELECT * FROM Participants WHERE inactive = 0 LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
 
         $res = array();
@@ -120,6 +126,7 @@ class User
         $user->lastName = $input_user->LastName;
         $user->status = $input_user->MembershipStatus;
         $user->email = $input_user->Email;
+        $user->isInactive = $input_user->inactive == 1;
 
         return $user;
     }
@@ -141,7 +148,21 @@ class User
         return $staff->save(Staff::exists($this->id));
     }
 
-    // TODO: Create a function that save user to database.
+    function save(): bool
+    {
+        $mysql = new MySQLConnection();
 
-    // TODO: Create function to cancel class registration
+        $inactive = ($this->isInactive ? 1 : 0);
+
+        $sql = "UPDATE Participants SET Email = '$this->email', FirstName = '$this->firstName', 
+                        LastName = '$this->lastName', inactive = $inactive, 
+                        MembershipStatus = $this->status WHERE ID = $this->id";
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if (!$result) {
+            echo mysqli_error($mysql->conn);
+        }
+
+        return $result;
+    }
 }

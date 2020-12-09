@@ -25,7 +25,7 @@
 			echo "\t\t\t</li>";
 			echo "\t\t\t<li class='list-group-item'><p>Member Fee:   $$program->memberFee</p> <p>Non Member Fee:   $$program->nonMemberFee</p></li>";
 			echo "\t\t</ul>";
-			echo "\t\t<a href='#' class='btn btn-block' style='background-color: red; color: white '>Cancel Registration</a>";
+			echo "\t\t<a href='/service/api.php?action=cancel&programID=$program->id' class='btn btn-block' style='background-color: red; color: white '>Cancel Registration</a>";
 			echo "\t</div>";
 			echo "</div>";
 	}
@@ -36,27 +36,27 @@
 	?>
 </h1>
 <h2>Account Info</h2>
-<table class="table table-bordered">
-	<tr>
-		<td>Email</td>
-		<td><?php echo "$user->Email"; ?></td>
-	</tr>
-	<tr>
-		<td>Password</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>First Name</td>
-		<td><?php echo "$user->FirstName"; ?></td>
-	</tr>
-	<tr>
-		<td>Last Name</td>
-		<td><?php echo "$user->LastName"; ?></td>
-	</tr>
-	<tr>
-		<td>Membership Status</td>
-		<td><?php echo "$user->MembershipStatus"; ?></td>
-	</tr>
+            <div class="card shadow my-4" id="detail-card">
+                <div class="card-body">
+                    <h3 class="card-title" id="name">
+			<span id="lastName"><?php echo "$user->LastName"; ?></span>
+			<span id="firstName"><?php echo "$user->FirstName"; ?></span>
+                    </h3>
+                    <hr>
+                    <div class="card-text">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <small class="d-block mb-2"><strong>Email: </strong></small>
+                                <a id="email" href=""><?php echo "$user->Email"; ?></a>
+                            </div>
+                            <div class="col-lg-6">
+                                <small class="d-block mb-2"><strong>Membership Status: </strong></small>
+                                <span id="status"><?php echo "$user->MembershipStatus"; ?></span>
+                            </div>
+                        </div>
+</div>
+                    </div>
+                </div>
 	<?php if($DEBUG): 
 		echo "<tr>
 			<td>ID</td>
@@ -64,8 +64,8 @@
 		</tr>";
 	endif;
 	?>
-</table>
-
+<br />
+<button>UPDATE</button>
 <br />
 <h2>Registered Classes</h2>
 <div class="container">
@@ -77,4 +77,6 @@
         	}
 		?>
 	</div>
+	<br />
+	<br />
 </div>

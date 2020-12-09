@@ -8,13 +8,6 @@ require_once '../authorize.php';
 </head>
 <body>
 <?php include 'menu.php'; ?>
-<!--<nav aria-label="breadcrumb">-->
-<!--    <ol class="breadcrumb">-->
-<!--        <li class="breadcrumb-item"><a href="index.php">Staff</a></li>-->
-<!--        <li class="breadcrumb-item"><a href="manage.php">Manage</a></li>-->
-<!--        <li class="breadcrumb-item active" aria-current="page">Programs</li>-->
-<!--    </ol>-->
-<!--</nav>-->
 <div class="container-fluid mt-4">
     <div class="row pr-2" style="height: calc(100vh - 80px)">
         <div class="col-xl-4 col-lg-5" style="height: available">
@@ -23,20 +16,20 @@ require_once '../authorize.php';
                 <h2 class="mt-1">Manage Members</h2>
                 <span class="lead">Select a member from the table to view more details</span>
             </div>
-            <div class="card shadow my-4" id="detail-card">
+            <div class="card shadow my-4 d-none" id="detail-card">
                 <div class="card-body">
-                    <h3 class="card-title" id="name"><span id="lastName">Zipse</span>, <span id="firstName">Quinn</span>
+                    <h3 class="card-title" id="name"><span id="lastName"></span>, <span id="firstName"></span>
                     </h3>
                     <hr>
                     <div class="card-text">
                         <div class="row">
                             <div class="col-lg-6">
                                 <small class="d-block mb-2"><strong>Email: </strong></small>
-                                <a id="email" href="">qzipse@outlook.com</a>
+                                <a id="email" href=""></a>
                             </div>
                             <div class="col-lg-6">
                                 <small class="d-block mb-2"><strong>Membership Status: </strong></small>
-                                <span id="status">Member</span>
+                                <span id="status"></span>
                             </div>
                         </div>
 
@@ -45,7 +38,7 @@ require_once '../authorize.php';
                 <div class="card-footer py-2 px-3">
                     <div class="float-right">
                         <button class="btn btn-sm btn-primary" id="edit">Edit</button>
-                        <button class="btn btn-sm btn-danger" id="remove">Remove</button>
+                        <button class="btn btn-sm btn-danger" id="cancel">Disable</button>
                     </div>
                 </div>
             </div>
@@ -107,7 +100,7 @@ require_once '../authorize.php';
     if (isset($_REQUEST['memberEdited'])) echo "Toast.fire({title: 'Member Updated!'});";
     ?>
 
-    const members = [];
+    let members = [];
 
     // function hideRoster() {
     //     $('#roster-card').addClass('d-none');
@@ -155,16 +148,20 @@ require_once '../authorize.php';
 
     getMembers();
 
-    async function search(s) {
+    async function search() {
+        let tableEl = $('#table_body');
+        let s = $('#search').val().toLowerCase();
 
-        let filtered = members.filter(it => it.firstName.contains(s) || it.lastName.contains(s));
+        let filtered = members.filter(it => it.firstName.toLowerCase().includes(s) || it.lastName.toLowerCase().includes(s));
+
+        tableEl.html('');
         let html = '';
 
         filtered.forEach(val => {
             html += generateLine(val);
         });
 
-        $('#table_body').html(html);
+        tableEl.html(html);
     }
 
     async function getMembers() {
@@ -179,12 +176,16 @@ require_once '../authorize.php';
 
         json.forEach(val => html += generateLine(val));
 
+        setMembers(json);
+
         $('#table_body').html(html);
     }
 
-    function generateLine(val) {
-        members.push(val);
+    function setMembers(json) {
+        members = [...json];
+    }
 
+    function generateLine(val) {
         return ` <tr onclick="get(${val['id']})">
                 <td>${val['firstName']}</td>
                 <td>${val['lastName']}</td>
@@ -249,24 +250,34 @@ require_once '../authorize.php';
             footer: '<small class="text-center">This will cancel registrations for this user.<br>' +
                 'The user will be retained for historical purposes.</small>'
         }).then((result) => {
-                // TODO: Cancel Class HERE.
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Disabled!',
-                        text: `${member.firstName} ${member.lastName}'s account has been disabled.`,
-                        icon: 'success',
-                        timer: 1500,
-                        timerProgressBar: true
-                    }).then(() => {
-                        $('#detail-card').addClass('d-none');
-                        getMembers();
+                    fetch('/service/api.php?action=disableMember&id=' + id).then((res) => {
+                        if (res.ok) {
+                            Swal.fire({
+                                title: 'Disabled!',
+                                text: `${member.firstName} ${member.lastName}'s account has been disabled.`,
+                                icon: 'success',
+                                timer: 1500,
+                                timerProgressBar: true
+                            }).then(() => {
+                                $('#detail-card').addClass('d-none');
+                                getMembers();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Failed!',
+                                text: `An error has occurred!`,
+                                icon: 'danger',
+                                timer: 1500,
+                                timerProgressBar: true
+                            });
+                        }
                     });
                 }
-
-
             }
         )
     }
+
 
 </script>
 <style>
