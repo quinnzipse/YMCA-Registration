@@ -28,6 +28,7 @@ $users = User::getNonStaff();
                 <hr>
                 <?php
                 foreach ($users as $user) {
+                    if($user->isInactive) continue;
                     echo '<div class="card my-3 clickable" onclick="select(' . $user->id . ')">
                     <div class="card-body">
                         <div class="card-text">
