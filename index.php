@@ -8,12 +8,30 @@ include 'menu.php';
 $loggedIn = $auth->isLoggedIn();
 $userProgs = array();
 
+echo "<script>
+if (window.sessionStorage.getItem('firstVisit') == null) {
+    window.sessionStorage.setItem('firstVisit', 'true');
+    Swal.fire({
+        title: 'Welcome!',
+        html: 'You are not logged in and cannot register for programs right now.  Would you like to log in?',
+        showConfirmButton: true,
+        confirmButtonText: 'Log In!',
+        showDenyButton: true,
+        denyButtonText: 'Not Now'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.replace('login.php');
+        }
+    })  
+} 
+</script>";
+
 if (isset($_REQUEST['loggedOut'])) {
     echo "
     <script>
         Swal.fire({
             title: 'Welcome!',
-            html: 'You are not logged in and cannot register for programs right now.  Would you like to log in?',
+            html: 'You just logged out and will not be able to register for programs.  Would you like to log in?',
             showConfirmButton: true,
             confirmButtonText: 'Log In!',
             showDenyButton: true,
@@ -71,7 +89,79 @@ function print_program($program) {
 ?>
 <!--<h2 class="display-4 text-center mt-5">Good Morning--><?php //echo ($GLOBALS['user'] ? ', ' . $GLOBALS['user']->FirstName : '') ?><!--!</h2>-->
 
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="width: 72vw; margin-left: auto; margin-right: auto; margin-top: 5vh; max-height: 128vh">
+
+<?php
+if ($loggedIn) {
+    $notif = '';
+    if ($loggedIn) {
+        $progs = Program::getParticipantProgram($loggedIn->ID);
+        foreach ($progs as $obj) {
+            if ($obj->inactive) {
+                $notif .= "Program " . $obj->name . " has been cancelled.\n";
+            }
+        }
+    }
+
+
+    echo '
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="jumbotron shadow-sm">
+                    <h2 class="mt-1">System Notifications</h2>
+                    <tbody id="notifications_area">
+              
+                    ';
+                    echo $notif;
+                    echo '      
+              
+                    </tbody>
+                </div>
+            </div>
+            <hr class="mt-0">
+
+            
+            <div class="row mb-5">    
+                ';
+
+                foreach ($progs as $obj) {
+                    if (!$obj->inactive) {
+                        print_program($obj);
+                    }
+                }
+
+                echo '
+                
+            </div>
+        </div>
+        
+    </div>
+
+        
+    ';
+
+
+
+
+    /*
+    echo '<div class="container">
+        <div class="row mt-3">
+            <?php
+               if ($loggedIn) {
+                    $progs = Program::getParticipantProgram($loggedIn->ID);
+                    foreach ($progs as $obj) {
+                        print_program($obj);
+                    }
+                }
+            ?>
+        </div>
+    </div>
+    ';
+    */
+} else {
+echo '
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="width: 72vw; margin-left: auto; margin-right: auto; margin-top: 5vh; max-height: 128vh">
     <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -92,21 +182,15 @@ function print_program($program) {
             <img src="../img\yoga.jpg" class="d-block w-100" alt="...">
         </div>
     </div>
-
-</div>
-
-<div class="container">
-    <div class="row mt-3">
-        <?php
-            if ($loggedIn) {
-                $progs = Program::getParticipantProgram($loggedIn->ID);
-                foreach ($progs as $obj) {
-                    print_program($obj);
-                }
-            }
-        ?>
     </div>
-</div>
+ ';
+}
+
+
+
+?>
+
+
 
 
 
