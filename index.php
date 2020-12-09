@@ -97,7 +97,7 @@ if ($loggedIn) {
         $progs = Program::getParticipantProgram($loggedIn->ID);
         foreach ($progs as $obj) {
             if ($obj->inactive) {
-                $notif .= "Program " . $obj->name . " has been cancelled.\n";
+                $notif .= "Program " . $obj->name . " has been cancelled." . "<br>";
             }
         }
     }
