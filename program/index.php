@@ -31,17 +31,30 @@ function print_program($program, bool $disabled, bool $registered)
     echo "\t\t\t<li class='list-group-item'><p>Member Fee:   $$program->memberFee</p> <p>Non Member Fee:   $$program->nonMemberFee</p></li>";
     echo "\t\t</ul>";
 
+
     if ($loggedIn) {
         $button = 'Register For Class';
-        if($disabled) $button = 'Time Conflict';
-        if($registered) $button = 'Already Registered';
+        if ($disabled) $button = 'Time Conflict';
+        if($program->programCount() >= $program->capacity) $button = 'Program is Full';
+        if ($registered) $button = 'Already Registered';
 
-        echo "\t\t<a href='/service/api.php?action=register&programID=$pID' class='btn btn-block " .
-            ($disabled ? 'disabled' : '') . "' style='background-color: #0851c7; color: white '>" .
-            $button . "</a>";
+        if ($button == 'Program is Full') {
+            echo "\t\t<a class='btn btn-block'; style=background-color: #0851c7; color: white; >Program is full</a>";
+        } else {
+            echo "\t\t<a href='/service/api.php?action=register&programID=$pID' class='btn btn-block " .
+                ($disabled ? 'disabled' : '') . "' style='background-color: #0851c7; color: white '>" .
+                $button . "</a>";
+        }
     } else {
-        echo "\t\t<a href='../login.php' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
+        if ($program->programCount() >= $program->capacity) {
+            echo "\t\t<a class='btn btn-block'; style=background-color: #0851c7; color: white; >Program is full</a>";
+        } else {
+            echo "\t\t<a href='../login.php' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
+        }
     }
+
+
+
     echo "\t</div>";
     echo "</div>";
 }
