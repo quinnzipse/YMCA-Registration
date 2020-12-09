@@ -10,7 +10,7 @@ if ($loggedIn) $userProgs = Program::getParticipantProgram($loggedIn->userID);
 function print_program($program, bool $disabled, bool $registered)
 {
     global $loggedIn;
-    $pID = $program->getID();
+    $pID = $program->id;
     $sdate = $program->startDate->format("M, d Y");
     $edate = $program->endDate->format("M, d Y");
     $stime = $program->startTime->format('g:i A');
@@ -82,11 +82,12 @@ function print_program($program, bool $disabled, bool $registered)
     <div class="row mb-5">
         <?php
         foreach ($progs as $obj) {
+            if($obj->inactive) continue;
             $disable = false;
             $registered = false;
             foreach ($userProgs as $userProg) {
                 if ($obj->isConflicting($userProg)) $disable = true;
-                if ($obj->getID() == $userProg->getID()) $registered = true;
+                if ($obj->id == $userProg->id) $registered = true;
             }
             print_program($obj, $disable, $registered);
         }

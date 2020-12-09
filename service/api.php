@@ -91,6 +91,10 @@ switch ($action) {
         $result = Staff::getStaff($_REQUEST['page'] ?? 0);
         echo json_encode($result);
         exit(200);
+    case 'get_members':
+        $result = User::getUsers($_REQUEST['page'] ?? 0);
+        echo json_encode($result);
+        exit(200);
     case 'search_users':
         if (isset($_REQUEST['v'])) {
             $result = User::search($_REQUEST['v']);

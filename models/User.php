@@ -45,7 +45,7 @@ class User
         $result = mysqli_query($mysql->conn, $sql);
 
         $obj = mysqli_fetch_object($result);
-        return User::userFactory($obj);
+        return User::userFactory($obj, false);
     }
 
     function isFree($classID)
@@ -81,7 +81,7 @@ class User
         $res = array();
 
         while ($obj = mysqli_fetch_object($result)) {
-            array_push($res, User::userFactory($obj));
+            array_push($res, User::userFactory($obj, false));
         }
 
         return $res;
@@ -99,15 +99,15 @@ class User
         $res = array();
 
         while ($obj = mysqli_fetch_object($result)) {
-            array_push($res, User::userFactory($obj));
+            array_push($res, User::userFactory($obj, false));
         }
 
         return $res;
     }
 
-    static function userFactory(object $input_user): User
+    static function userFactory(object $input_user, bool $hasStaff): User
     {
-        if ($input_user->MembershipStatus == MembershipStatus::STAFF) {
+        if ($input_user->MembershipStatus == MembershipStatus::STAFF && $hasStaff) {
             $user = new Staff();
             $user->fill($input_user);
         } else {

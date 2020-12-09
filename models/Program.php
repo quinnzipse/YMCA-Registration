@@ -11,6 +11,7 @@ class Program
     public int $memberFee;
     public int $nonMemberFee;
     public string $indexed;
+    public bool $inactive;
     public string $location;
     public DateTime $startDate;
     public DateTime $endDate;
@@ -43,6 +44,8 @@ class Program
 
     function isConflicting(Program $other): bool
     {
+        if ($this->inactive || $other->inactive) return false;
+
         if (($this->dayOfWeek & $other->dayOfWeek) === 0) {
             return false;
         }
@@ -75,13 +78,14 @@ class Program
             $sql = "UPDATE Programs SET Name = '$this->name', ShortDesc = '$this->shortDesc', DescFile = '$this->descFile', 
                     Capacity = $this->capacity, MemberFee = $this->memberFee, NonMemberFee = $this->nonMemberFee,
                     Location = '$this->location', start_date = '$sDate', end_date = '$eDate', 
-                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = '$this->indexed' 
+                    start_time = '$sTime', end_time = '$eTime', day_of_week = $this->dayOfWeek, indexed = '$this->indexed', inactive = 0
                     WHERE ID = $this->id";
         } else {
+            $inactive = $this->inactive ? 1 : 0;
             $sql = "INSERT INTO Programs (NAME, DESCFILE, ShortDesc, CAPACITY, MEMBERFEE, NONMEMBERFEE, LOCATION, START_DATE, 
-                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK, indexed) VALUES ('$this->name', '$this->descFile', '$this->shortDesc',
+                      END_DATE, START_TIME, END_TIME, DAY_OF_WEEK, indexed, inactive) VALUES ('$this->name', '$this->descFile', '$this->shortDesc',
                       $this->capacity, $this->memberFee, $this->nonMemberFee, '$this->location', '$sDate', 
-                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek, '$this->indexed')";
+                      '$eDate', '$sTime', '$eTime', $this->dayOfWeek, '$this->indexed', $inactive)";
         }
 
         $result = mysqli_query($mysql->conn, $sql);
@@ -106,6 +110,7 @@ class Program
         $program->memberFee = $input_program->MemberFee;
         $program->nonMemberFee = $input_program->NonMemberFee;
         $program->indexed = $input_program->indexed;
+        $program->inactive = $input_program->inactive == 1;
         $program->days = $program->getDaysOfWeek();
 
         return $program;
@@ -237,8 +242,7 @@ class Program
             echo 'getting';
             $program = Program::get($id);
             return $program->createProgram();
-        }
-        else {
+        } else {
             echo "Program ID was bad";
             return false;
         }
@@ -252,10 +256,5 @@ class Program
         $sql = "SELECT LastName, FirstName, ParticipantID, Email, MembershipStatus FROM Participant_Programs LEFT JOIN Participants AS P ON ParticipantID = P.ID WHERE ProgramID = $this->id";
 
         return mysqli_query($mysql->conn, $sql)->fetch_all();
-    }
-
-    public function getID(): int
-    {
-        return $this->id;
     }
 }
