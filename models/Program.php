@@ -34,7 +34,7 @@ class Program
 
         $result = mysqli_query($mysql->conn, $sql);
 
-        if(!$result){
+        if (!$result) {
             mysqli_error($mysql->conn);
         }
 
@@ -83,6 +83,21 @@ class Program
         }
 
         return false;
+    }
+
+    public static function getProgramsByUser(int $id): array
+    {
+        $mysql = new MySQLConnection();
+        $sql = "SELECT * FROM Participant_Programs JOIN Programs ON ProgramID = ID WHERE ParticipantID = $id";
+
+        $result = mysqli_query($mysql->conn, $sql);
+        $res = array();
+
+        while ($obj = mysqli_fetch_object($result)) {
+            array_push($res, Program::programFactory($obj));
+        }
+
+        return $res;
     }
 
     function save(): bool

@@ -193,6 +193,18 @@ require_once '../authorize.php';
             </tr>`;
     }
 
+    async function getParticipantPrograms(id) {
+        let response = await fetch('/service/api.php?action=getProgramsByUser&id=' + id);
+        if (!response.ok) return;
+
+        let json = await response.json();
+        let html = '';
+
+        json.forEach((val) => {
+            html += `<tr><td>${val.name}</td><td>${val.name}</td></tr>`;
+        });
+    }
+
     // TODO
     function setupButtons(id) {
         // get the buttons
