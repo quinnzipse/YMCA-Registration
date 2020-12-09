@@ -81,7 +81,7 @@ function print_program($program) {
     echo "\t\t\t</li>";
     echo "\t\t\t<li class='list-group-item'><p>Member Fee:   $$program->memberFee</p> <p>Non Member Fee:   $$program->nonMemberFee</p></li>";
     echo "\t\t</ul>";
-    echo "\t\t<a href='#' class='btn btn-block' style='background-color: red; color: white '>Cancel Registration</a>";
+    echo "\t\t<a href='/service/api.php?action=cancel&programID=$program->id' class='btn btn-block' style='background-color: red; color: white '>Cancel Registration</a>";
     echo "\t</div>";
     echo "</div>";
 }
