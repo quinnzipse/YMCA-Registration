@@ -32,24 +32,33 @@ require_once '../authorize.php';
                                 <span id="status"></span>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="card-footer py-2 px-3">
                     <div class="float-right">
+                        <button class="btn btn-sm btn-info" id="program">View Programs</button>
                         <button class="btn btn-sm btn-primary" id="edit">Edit</button>
                         <button class="btn btn-sm btn-danger" id="cancel">Disable</button>
                     </div>
                 </div>
             </div>
-            <div class="card shadow d-none" id="roster-card">
+            <div class="card shadow d-none" id="program-card">
                 <div class="card-body">
-                    <h4 class="card-title">Roster for <span id="rosterName"></span></h4>
+                    <h4 class="card-title">Programs for <span id="userName"></span></h4>
                     <div class="card-text">
-                        <table class="table my-4" id="roster-data">
+                        <table class="table my-4">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Days</th>
+                            </tr>
+                            </thead>
+                            <tbody id="program-data">
                             <!-- This will be generated -->
+                            </tbody>
                         </table>
-                        <button class="btn btn-sm btn-secondary float-right" onclick="hideRoster()">Back</button>
+                        <button class="btn btn-sm btn-secondary float-right" onclick="hidePrograms()">Back</button>
                     </div>
                 </div>
             </div>
@@ -102,45 +111,16 @@ require_once '../authorize.php';
 
     let members = [];
 
-    // function hideRoster() {
-    //     $('#roster-card').addClass('d-none');
-    //     $('#roster-data').html('');
-    //     $('#detail-card').removeClass('d-none');
-    // }
+    function showPrograms() {
+        $('#program-card').removeClass('d-none');
+        $('#detail-card').addClass('d-none');
+    }
 
-    // async function getRoster(id) {
-    //     let request = await fetch('/service/api.php?action=getRoster&programID=' + id);
-    //     let json = await request.json();
-    //     if (!json) console.log("Got nothing :(");
-    //
-    //     let program = programs.find(val => val.id === id);
-    //
-    //     $('#rosterName').text(program.name);
-    //
-    //     // Setup roster data.
-    //     let listOfPeps = $('#roster-data');
-    //
-    //     let html = '';
-    //
-    //     // Generate the header
-    //     html += '<thead>';
-    //     if (json.length === 0) html += '<tr><th>No one has signed up yet!</th></tr>';
-    //     else html += '<tr><th>Last Name</th><th>First Name</th><th>Email</th></tr>';
-    //     html += '</thead>';
-    //
-    //     // Generate the body
-    //     html += '<tbody>';
-    //     json.forEach(val => {
-    //         html += `<tr><td>${val[0]}</td><td>${val[1]}</td><td>${val[3]}</td></tr>`;
-    //     });
-    //     html += '</tbody>';
-    //
-    //     listOfPeps.html(html);
-    //
-    //     // Show our work off!
-    //     $('#detail-card').addClass('d-none');
-    //     $('#roster-card').removeClass('d-none');
-    // }
+    function hidePrograms() {
+        $('#program-card').addClass('d-none');
+        $('#program-data').html('');
+        $('#detail-card').removeClass('d-none');
+    }
 
     let searchField = $("#search");
 
@@ -197,12 +177,22 @@ require_once '../authorize.php';
         let response = await fetch('/service/api.php?action=getProgramsByUser&id=' + id);
         if (!response.ok) return;
 
+        let mem = members.find(it => it.id === id);
+
         let json = await response.json();
         let html = '';
 
+        $('#userName').text(mem.firstName + " " + mem.lastName);
+
         json.forEach((val) => {
-            html += `<tr><td>${val.name}</td><td>${val.name}</td></tr>`;
+            if (!val.inactive) {
+                html += `<tr><td>${val.name}</td><td>${val.location}</td><td>${val.days.join(", ")}</td></tr>`;
+            }
         });
+
+        $("#program-data").html(html);
+
+        showPrograms();
     }
 
     // TODO
@@ -229,6 +219,7 @@ require_once '../authorize.php';
         let member = members.find(it => it.id === id);
 
         // Make the status a human readable string.
+        let emailEl = $('#email');
         let status = 'Non Member';
         if (member.status === 1) status = 'Member';
         else if (member.status === 3) status = 'Staff';
@@ -236,14 +227,14 @@ require_once '../authorize.php';
         // Fill in the card.
         $('#firstName').text(member.firstName);
         $('#lastName').text(member.lastName);
-        $('#email').text(member.email);
+        emailEl.text(member.email);
+        emailEl.prop('href', 'mailto:' + member.email);
         $('#status').text(status);
 
         setupButtons(id);
 
         // Make it visible
-        $('#detail-card').removeClass('d-none');
-        $('#roster-card').addClass('d-none');
+        hidePrograms();
 
     }
 

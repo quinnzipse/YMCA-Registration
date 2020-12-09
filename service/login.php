@@ -31,6 +31,12 @@ if ($result) {
         // Record exists, get the user.
         $user = $result->fetch_object();
 
+        if ($user->inactive == 1) {
+            header("Location: /login.php?failed=2");
+            http_send_status(400);
+            exit(400);
+        }
+
         // Verify the password is correct.
         if (password_verify($_REQUEST['password'], $user->Password)) {
             // Create a UUID to associate with the user.

@@ -5,7 +5,9 @@
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
 <body>
-<?php include 'menu.php'; ?>
+<?php include 'menu.php';
+$errorCode = $_REQUEST['failed'] ?? 0;
+?>
 <main class="h-100">
     <div class="d-flex h-100">
         <div class="row m-auto w-75">
@@ -18,13 +20,18 @@
                                class="form-control" value="<?php echo $_COOKIE['email'] ?? '' ?>" required>
                         <label class="form-label mt-2" for="password_input">Password</label>
                         <input type="password" name="password" id="password_input"
-                               class="form-control <?php echo $_REQUEST['failed'] == '1' ? 'is-invalid' : '' ?>"
+                               class="form-control <?php echo $errorCode != 0 ? 'is-invalid' : '' ?>"
                                required>
                         <?php
                         // If the server returns the error code for wrong password, display message.
-                        if ($_REQUEST['failed'] ?? 0 == '1') {
+                        if ( $errorCode == 1) {
                             echo '<p class="text-danger mt-2 mb-0">' .
                                 '<small>Invalid Username/Password. Please try Again.</small></p>';
+                        }
+
+                        if ( $errorCode == 2) {
+                            echo '<p class="text-danger mt-2 mb-0">' .
+                                '<small>User Account has been disabled. Please contact YMCA Staff.</small></p>';
                         }
                         // If the server returns the error code for reauth, display message.
                         if ($_REQUEST['reauth'] ?? 0 == '1') {

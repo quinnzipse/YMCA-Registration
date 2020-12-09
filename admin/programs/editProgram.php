@@ -56,7 +56,7 @@ if (isset($_REQUEST['p'])) {
                                 <label for="capacity">Capacity</label>
                                 <input class="form-control" name="capacity" type="number"
                                        value="<?php echo $program->capacity ?>" id="capacity" min="0"
-                                       required>
+                                       required readonly>
                                 <div class="invalid-feedback">How many people can sign up?</div>
                                 <div class="valid-feedback">Perfect!</div>
                             </div>
@@ -67,7 +67,7 @@ if (isset($_REQUEST['p'])) {
                             <div class="form-group">
                                 <label for="start_date">Start Date</label>
                                 <input class="form-control" name="start_date" id="start_date"
-                                       value="<?php echo $program->startDate->format('Y-m-d') ?>" type="date" required>
+                                       value="<?php echo $program->startDate->format('Y-m-d') ?>" type="date" required readonly>
                                 <div class="invalid-feedback">
                                     Invalid Start Date.
                                 </div>
@@ -77,7 +77,7 @@ if (isset($_REQUEST['p'])) {
                             <div class="form-group">
                                 <label for="end_date">End Date</label>
                                 <input class="form-control" name="end_date" id="end_date"
-                                       value="<?php echo $program->endDate->format('Y-m-d') ?>" type="date" required>
+                                       value="<?php echo $program->endDate->format('Y-m-d') ?>" type="date" required readonly>
                                 <div class="invalid-feedback">
                                     Invalid End Date.
                                 </div>
@@ -87,7 +87,7 @@ if (isset($_REQUEST['p'])) {
                             <div class="form-group">
                                 <label for="start_time">Start Time</label>
                                 <input class="form-control" name="start_time" id="start_time"
-                                       value="<?php echo $program->startTime->format('H:i:s') ?>" type="time" required>
+                                       value="<?php echo $program->startTime->format('H:i:s') ?>" type="time" required readonly>
                                 <div class="invalid-feedback">
                                     Invalid Start Time.
                                 </div>
@@ -97,7 +97,7 @@ if (isset($_REQUEST['p'])) {
                             <div class="form-group">
                                 <label for="end_time">End Time</label>
                                 <input class="form-control" name="end_time" id="end_time"
-                                       value="<?php echo $program->endTime->format('H:i:s') ?>" type="time" required>
+                                       value="<?php echo $program->endTime->format('H:i:s') ?>" type="time" required readonly>
                                 <div class="invalid-feedback">
                                     Invalid End Time.
                                 </div>
@@ -108,39 +108,39 @@ if (isset($_REQUEST['p'])) {
                                 <label>Every...</label>
                                 <br>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Sunday"
+                                    <input class="form-check-input" disabled name="DayOfWeek[]" type="checkbox" id="Sunday"
                                            value="1" <?php echo(in_array("Sunday", $program->days) ? 'checked' : '') ?>
                                     >
                                     <label class="form-check-label" for="Sunday">Sunday</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Monday"
+                                    <input class="form-check-input" disabled  name="DayOfWeek[]" type="checkbox" id="Monday"
                                            value="2" <?php echo(in_array("Monday", $program->days) ? 'checked' : '') ?>>
                                     <label class="form-check-label" for="Monday">Monday</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Tuesday"
+                                    <input class="form-check-input" disabled name="DayOfWeek[]" type="checkbox" id="Tuesday"
                                            value="4" <?php echo(in_array("Tuesday", $program->days) ? 'checked' : '') ?>>
                                     <label class="form-check-label" for="Tuesday">Tuesday</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox"
+                                    <input class="form-check-input" disabled name="DayOfWeek[]" type="checkbox"
                                            id="Wednesday" <?php echo(in_array("Wednesday", $program->days) ? 'checked' : '') ?>
                                            value="8">
                                     <label class="form-check-label" for="Wednesday">Wednesday</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Thursday"
+                                    <input class="form-check-input" disabled name="DayOfWeek[]" type="checkbox" id="Thursday"
                                            value="16" <?php echo(in_array("Thursday", $program->days) ? 'checked' : '') ?>>
                                     <label class="form-check-label" for="Thursday">Thursday</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Friday"
+                                    <input class="form-check-input" disabled name="DayOfWeek[]" type="checkbox" id="Friday"
                                            value="32" <?php echo(in_array("Friday", $program->days) ? 'checked' : '') ?>>
                                     <label class="form-check-label" for="Friday">Friday</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="DayOfWeek[]" type="checkbox" id="Saturday"
+                                    <input class="form-check-input" disabled name="DayOfWeek[]" type="checkbox" id="Saturday"
                                            value="64" <?php echo(in_array("Saturday", $program->days) ? 'checked' : '') ?>>
                                     <label class="form-check-label" for="Saturday">Saturday</label>
                                 </div>
