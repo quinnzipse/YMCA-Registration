@@ -87,7 +87,7 @@ class User
         $mysql = new MySQLConnection();
         $offset = $page * $pageLength;
 
-        $sql = "SELECT * FROM Participants WHERE inactive = 0 LIMIT $offset, $pageLength;";
+        $sql = "SELECT * FROM Participants LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
 
         $res = array();

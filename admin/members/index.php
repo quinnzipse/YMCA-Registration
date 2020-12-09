@@ -18,9 +18,12 @@ require_once '../authorize.php';
             </div>
             <div class="card shadow my-4 d-none" id="detail-card">
                 <div class="card-body">
-                    <h3 class="card-title" id="name"><span id="lastName"></span>, <span id="firstName"></span>
+                    <h3 class="card-title d-inline-block" id="name">
+                        <span id="lastName"></span>, <span id="firstName"> </span>
                     </h3>
-                    <hr>
+                    <h6 class="ml-2 d-none" id="inactiveBadge"><span
+                                class="badge text-white bg-secondary">Inactive</span></h6>
+                    <hr class="mt-1">
                     <div class="card-text">
                         <div class="row">
                             <div class="col-lg-6">
@@ -169,7 +172,8 @@ require_once '../authorize.php';
     }
 
     function generateLine(val) {
-        return ` <tr onclick="get(${val['id']})">
+        console.log(val);
+        return ` <tr class="${val['isInactive'] ? 'table-danger' : ''}" onclick="get(${val['id']})">
                 <td>${val['firstName']}</td>
                 <td>${val['lastName']}</td>
                 <td>${val['email']}</td>
@@ -231,6 +235,17 @@ require_once '../authorize.php';
         emailEl.text(member.email);
         emailEl.prop('href', 'mailto:' + member.email);
         $('#status').text(status);
+
+        let badge = $('#inactiveBadge');
+        if (member.isInactive) {
+            badge.removeClass('d-none');
+            badge.addClass('d-inline');
+            $('button').prop('disabled', true);
+        } else {
+            badge.removeClass('d-inline');
+            badge.addClass('d-none');
+            $('button').prop('disabled', false);
+        }
 
         setupButtons(id);
 
