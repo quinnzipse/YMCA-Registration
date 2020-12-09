@@ -107,29 +107,29 @@ if ($loggedIn) {
 
     echo '
     <div class="container">
-        <div class="row mt-5">
-            <div class="col-md-6">
-                <div class="jumbotron shadow-sm">
-                    <h2 class="mt-1">System Notifications</h2>
-                    <tbody id="notifications_area">
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <div class="jumbotron shadow-sm">
+                        <h2 class="mt-1">System Notifications</h2>
+                        <tbody id="notifications_area">
               
                     ';
                     echo $notif;
                     echo '      
               
-                    </tbody>
+                        </tbody>
+                    </div>
                 </div>
             </div>
             <hr class="mt-0"> 
-            <div class="row mb-5">';
-                foreach ($progs as $obj) {
-                    if (!$obj->inactive) {
-                        print_program($obj);
+                <div class="row mb-5">';
+                    foreach ($progs as $obj) {
+                        if (!$obj->inactive) {
+                            print_program($obj);
+                        }
                     }
-                }
-                echo ' 
-            </div>
-        </div>        
+                    echo ' 
+                </div>      
     </div>';
 } else {
     echo '
