@@ -14,8 +14,6 @@ class Staff extends User
 
     public static function editStaff(int $id): bool
     {
-        var_dump($id);
-
         $staff = self::get($id);
         $staff->phoneNumber = $_POST['phone'];
         $staff->middleInit = $_POST['middle'];

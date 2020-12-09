@@ -238,7 +238,7 @@ require_once '../authorize.php';
 
         let startDate = new Date(user.startDay.date).toLocaleDateString('en-US');
         let dob = new Date(user.dob.date).toLocaleDateString('en-US');
-        $('#start_date').text(startDate);
+        $('#startDate').text(startDate);
         $('#dob').text(dob);
 
         setupButtons(id);
