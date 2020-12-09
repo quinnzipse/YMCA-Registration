@@ -137,6 +137,8 @@ if (isset($_REQUEST['s'])) {
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+        } else {
+            $("input").prop('disabled', false);
         }
         form.classList.add('was-validated');
     }, false);

@@ -91,9 +91,11 @@ function print_program($program) {
 
 
 <?php
+var_dump($loggedIn);
 if ($loggedIn) {
+//    var_dump($loggedIn);
     $notif = '';
-    $progs = Program::getParticipantProgram($loggedIn->ID);
+    $progs = Program::getParticipantProgram($loggedIn->userID ?? $loggedIn->ID);
     $mysql = new MySQLConnection();
     foreach ($progs as $obj) {
         if ($obj->inactive) {
