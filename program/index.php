@@ -32,9 +32,13 @@ function print_program($program, bool $disabled, bool $registered)
     echo "\t\t</ul>";
 
     if ($loggedIn) {
+        $button = 'Register For Class';
+        if($disabled) $button = 'Time Conflict';
+        if($registered) $button = 'Already Registered';
+
         echo "\t\t<a href='/service/api.php?action=register&programID=$pID' class='btn btn-block " .
             ($disabled ? 'disabled' : '') . "' style='background-color: #0851c7; color: white '>" .
-            ($registered ? 'Already Registered' : 'Register For Class') . "</a>";
+            $button . "</a>";
     } else {
         echo "\t\t<a href='../login.php' class='btn btn-block' style='background-color: #0851c7; color: white '>Register For Class</a>";
     }
