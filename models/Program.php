@@ -291,7 +291,7 @@ class Program
     {
         $mysql = new MySQLConnection();
 
-        $sql = "SELECT LastName, FirstName, ParticipantID, Email, MembershipStatus FROM Participant_Programs LEFT JOIN Participants AS P ON ParticipantID = P.ID WHERE ProgramID = $this->id";
+        $sql = "SELECT LastName, FirstName, ParticipantID, Email, MembershipStatus FROM Participant_Programs LEFT JOIN Participants AS P ON ParticipantID = P.ID WHERE ProgramID = $this->id AND status != 1";
 
         return mysqli_query($mysql->conn, $sql)->fetch_all();
     }
