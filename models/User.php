@@ -34,7 +34,7 @@ class User
         $result = mysqli_query($mysql->conn, $sql);
 
         if(!$result) return false;
-
+        
         return $this->save();
     }
 

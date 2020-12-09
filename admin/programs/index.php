@@ -184,6 +184,10 @@ require_once '../authorize.php';
         $('#roster-card').removeClass('d-none');
     }
 
+    function deleteProgram(id) {
+        // TODO!!!
+    }
+
     let searchField = $("#search");
 
     searchField.on('keypress', (val) => val.code === 'Enter' ? search() : '');
