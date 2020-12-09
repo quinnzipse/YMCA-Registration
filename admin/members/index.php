@@ -184,18 +184,16 @@ require_once '../authorize.php';
 
         $('#userName').text(mem.firstName + " " + mem.lastName);
 
-        json.forEach((val) => {
-            if (!val.inactive) {
-                html += `<tr><td>${val.name}</td><td>${val.location}</td><td>${val.days.join(", ")}</td></tr>`;
-            }
-        });
+        json = json.filter(val => val.inactive === false);
+
+        if(json.length === 0) html += '<tr><td colspan="3" class="text-center text-muted">No Active Registrations</td></tr>';
+        json.forEach((val) => html += `<tr><td>${val.name}</td><td>${val.location}</td><td>${val.days.join(", ")}</td></tr>`);
 
         $("#program-data").html(html);
 
         showPrograms();
     }
 
-    // TODO
     function setupButtons(id) {
         // get the buttons
         let programButton = $('#program');
