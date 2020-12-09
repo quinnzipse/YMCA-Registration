@@ -91,11 +91,10 @@ function print_program($program) {
 
 
 <?php
-var_dump($loggedIn);
 if ($loggedIn) {
-//    var_dump($loggedIn);
     $notif = '';
-    $progs = Program::getParticipantProgram($loggedIn->userID ?? $loggedIn->ID);
+    $id = $loggedIn->userID ?? $loggedIn->ID;
+    $progs = Program::getParticipantProgram($id);
     $mysql = new MySQLConnection();
     foreach ($progs as $obj) {
         if ($obj->inactive) {
@@ -104,7 +103,7 @@ if ($loggedIn) {
             $sql = "UPDATE Participant_Programs SET status = 2 WHERE ProgramID = $obj->id && ParticipantID = $loggedIn->ID";
         }
     }
-    $progs = Program::getParticipantProgram($loggedIn->ID, 0);
+    $progs = Program::getParticipantProgram($id, 0);
 
     echo '
     <div class="container">
