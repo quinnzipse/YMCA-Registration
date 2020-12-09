@@ -27,7 +27,13 @@ class User
 
     public function disableUser(): bool
     {
+        $mysql = new MySQLConnection();
         $this->isInactive = true;
+
+        $sql = "UPDATE Participant_Programs SET status = 1 WHERE ParticipantID = $this->id";
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if(!$result) return false;
 
         return $this->save();
     }
