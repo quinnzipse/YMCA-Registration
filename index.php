@@ -122,6 +122,7 @@ if ($loggedIn) {
                 </div>
             </div>
             <hr class="mt-0"> 
+                <h2>Registered Programs</h2>
                 <div class="row mb-5">';
                     foreach ($progs as $obj) {
                         if (!$obj->inactive) {
