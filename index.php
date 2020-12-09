@@ -93,18 +93,18 @@ function print_program($program) {
 <?php
 if ($loggedIn) {
     $notif = '';
-    if ($loggedIn) {
-        $progs = Program::getParticipantProgram($loggedIn->ID);
-        foreach ($progs as $obj) {
-            if ($obj->inactive) {
-                $notif .= "Program " . $obj->name . " has been cancelled." . "<br>";
-            }
+    $progs = Program::getParticipantProgram($loggedIn->ID);
+    $mysql = new MySQLConnection();
+    foreach ($progs as $obj) {
+        if ($obj->inactive) {
+            $notif .= "Program " . $obj->name . " has been cancelled." . "<br>";
+            $sql = "SELECT ProgramID FROM Participant_Programs WHERE ProgramID = $obj->id";
+            $sql = "UPDATE Participant_Programs SET status = 2 WHERE ProgramID = $obj->id && ParticipantID = $loggedIn->ID";
         }
     }
-
+    $progs = Program::getParticipantProgram($loggedIn->ID, 0);
 
     echo '
-
     <div class="container">
         <div class="row mt-5">
             <div class="col-md-6">
@@ -119,49 +119,20 @@ if ($loggedIn) {
                     </tbody>
                 </div>
             </div>
-            <hr class="mt-0">
-
-            
-            <div class="row mb-5">    
-                ';
-
+            <hr class="mt-0"> 
+            <div class="row mb-5">';
                 foreach ($progs as $obj) {
                     if (!$obj->inactive) {
                         print_program($obj);
                     }
                 }
-
-                echo '
-                
+                echo ' 
             </div>
-        </div>
-        
-    </div>
-
-        
-    ';
-
-
-
-
-    /*
-    echo '<div class="container">
-        <div class="row mt-3">
-            <?php
-               if ($loggedIn) {
-                    $progs = Program::getParticipantProgram($loggedIn->ID);
-                    foreach ($progs as $obj) {
-                        print_program($obj);
-                    }
-                }
-            ?>
-        </div>
-    </div>
-    ';
-    */
+        </div>        
+    </div>';
 } else {
-echo '
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="width: 72vw; margin-left: auto; margin-right: auto; margin-top: 5vh; max-height: 128vh">
+    echo '
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="width: 72vw; margin-left: auto; margin-right: auto; margin-top: 5vh; max-height: 128vh">
     <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -183,16 +154,7 @@ echo '
         </div>
     </div>
     </div>
- ';
+    ';
 }
-
-
-
 ?>
-
-
-
-
-
-
 </html>
