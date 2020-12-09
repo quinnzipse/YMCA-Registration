@@ -75,7 +75,7 @@ function print_program($program, bool $disabled, bool $registered)
     </div>
     <hr class="mt-0">
 
-    <div class="row">
+    <div class="row mb-5">
         <?php
         foreach ($progs as $obj) {
             $disable = false;
