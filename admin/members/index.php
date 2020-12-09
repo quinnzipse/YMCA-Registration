@@ -132,7 +132,10 @@ require_once '../authorize.php';
         let tableEl = $('#table_body');
         let s = $('#search').val().toLowerCase();
 
-        let filtered = members.filter(it => it.firstName.toLowerCase().includes(s) || it.lastName.toLowerCase().includes(s));
+        let filtered = members.filter(it => {
+            let name = it.firstName + " " + it.lastName;
+            return name.toLowerCase().includes(s);
+        });
 
         tableEl.html('');
         let html = '';
@@ -186,7 +189,7 @@ require_once '../authorize.php';
 
         json = json.filter(val => val.inactive === false);
 
-        if(json.length === 0) html += '<tr><td colspan="3" class="text-center text-muted">No Active Registrations</td></tr>';
+        if (json.length === 0) html += '<tr><td colspan="3" class="text-center text-muted">No Active Registrations</td></tr>';
         json.forEach((val) => html += `<tr><td>${val.name}</td><td>${val.location}</td><td>${val.days.join(", ")}</td></tr>`);
 
         $("#program-data").html(html);
