@@ -200,6 +200,7 @@
     startTime[0].addEventListener('change', () => endTime.prop('min', addMins(startTime.val(), 15)));
     endTime[0].addEventListener('change', () => startTime.prop('max', endTime.val()));
 
+    // adds restrictions to the times
     function addMins(t, mins) {
         let d = new Date();
 
@@ -209,9 +210,11 @@
         return d.toTimeString().substr(0, 5);
     }
 
+    // Validates the form.
     function validateChecks() {
         let checked = false;
 
+        // make sure at least on checkbox is checked
         $('input[type=checkbox]').each((i, val) => {
             if (val.checked) checked = true;
         });

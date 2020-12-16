@@ -143,16 +143,13 @@ require_once '../authorize.php';
 
     const staff = [];
 
-    function disableStaff(id) {
-        // TODO!!!
-    }
-
     let searchField = $("#search");
 
     searchField.on('keypress', (val) => val.code === 'Enter' ? search() : '');
 
     getStaff();
 
+    // sends a request to the search for staff with key word from search box.
     async function search() {
         let value = searchField.val();
         console.log(value);
@@ -210,14 +207,17 @@ require_once '../authorize.php';
         editButton.on('click', () => window.location = `editStaff.php?s=${id}`);
     }
 
+    // puts in the commas from a given image.
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    // properly formats a number.
     function formatPhoneNumber(number) {
         return "(" + number.substr(0, 3) + ") " + number.substr(3, 3) + "-" + number.substring(6);
     }
 
+    // fills the detail card.
     function get(id) {
 
         // Find the program in the array.
@@ -249,6 +249,7 @@ require_once '../authorize.php';
 
     }
 
+    // revokes the staff's permissions.
     function removeStaff(id) {
         let person = staff.find(it => it.id === id);
 
@@ -293,6 +294,7 @@ require_once '../authorize.php';
         )
     }
 
+    // sends the request to the server
     async function deleteStaff(id) {
         let response = await fetch(`/service/api.php?action=revoke_access&id=${id}`);
         return response.ok;
