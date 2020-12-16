@@ -232,6 +232,7 @@ if (isset($_REQUEST['p'])) {
     startTime[0].addEventListener('change', () => endTime.prop('min', addMins(startTime.val(), 15)));
     endTime[0].addEventListener('change', () => startTime.prop('max', endTime.val()));
 
+    // adds restrictions to the times
     function addMins(t, mins) {
         let d = new Date();
 
@@ -241,6 +242,7 @@ if (isset($_REQUEST['p'])) {
         return d.toTimeString().substr(0, 5);
     }
 
+    // make sure at least on checkbox is checked
     function validateChecks() {
         let checked = false;
 

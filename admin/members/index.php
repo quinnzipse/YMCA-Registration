@@ -100,6 +100,7 @@ require_once '../authorize.php';
     </div>
 </div>
 <script>
+    // member edited toast.
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -110,18 +111,20 @@ require_once '../authorize.php';
     });
 
     <?php
+    // If a member was edited, show the toast!
     if (isset($_REQUEST['memberEdited'])) echo "Toast.fire({title: 'Member Updated!'});";
     ?>
 
     let members = [];
 
-    // Display the
     function showPrograms() {
+        // Display or hide the proper DOM Elements to see the programs.
         $('#program-card').removeClass('d-none');
         $('#detail-card').addClass('d-none');
     }
 
     function hidePrograms() {
+        // Display or hide the proper DOM Elements to see the details.
         $('#program-card').addClass('d-none');
         $('#program-data').html('');
         $('#detail-card').removeClass('d-none');
@@ -131,12 +134,15 @@ require_once '../authorize.php';
 
     searchField.on('keypress', (val) => val.code === 'Enter' ? search() : '');
 
+    // initialize the members table.
     getMembers();
 
+    // search the table.
     async function search() {
         let tableEl = $('#table_body');
         let s = $('#search').val().toLowerCase();
 
+        // filter the members based on the names.
         let filtered = members.filter(it => {
             let name = it.firstName + " " + it.lastName;
             return name.toLowerCase().includes(s);
@@ -145,6 +151,7 @@ require_once '../authorize.php';
         tableEl.html('');
         let html = '';
 
+        // generate the new table.
         filtered.forEach(val => {
             html += generateLine(val);
         });
@@ -152,6 +159,7 @@ require_once '../authorize.php';
         tableEl.html(html);
     }
 
+    // get all the members and display them in the table.
     async function getMembers() {
         const response = await fetch(`/service/api.php?action=get_members`);
 
@@ -162,6 +170,7 @@ require_once '../authorize.php';
         let json = await response.json();
         let html = '';
 
+        // generate the html for each line.
         json.forEach(val => html += generateLine(val));
 
         setMembers(json);
@@ -169,12 +178,13 @@ require_once '../authorize.php';
         $('#table_body').html(html);
     }
 
+    // Keeps the members for later.
     function setMembers(json) {
         members = [...json];
     }
 
+    // given an array with member elements, generate one table row!
     function generateLine(val) {
-        console.log(val);
         return ` <tr class="${val['isInactive'] ? 'table-danger' : ''}" onclick="get(${val['id']})">
                 <td>${val['firstName']}</td>
                 <td>${val['lastName']}</td>
