@@ -20,6 +20,7 @@ $user = $auth->isLoggedIn();
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="container-fluid">
         <div class="navbar-nav">
             <?php
                 echo "  <a class='nav-link' href='$host/'>Home</a>
@@ -34,6 +35,10 @@ $user = $auth->isLoggedIn();
                             echo "<a class='nav-link' href='$host/login.php'>Login</a>";
                         }
             ?>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a class="nav-link" href="Help!.pdf" target="_blank">Help!</a></li>
+        </ul>
         </div>
     </div>
 </nav>
