@@ -5,12 +5,7 @@
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
 <body>
-<?php
-//login page
-
-//include the menu
-include 'menu.php';
-//check for error code
+<?php include 'menu.php';
 $errorCode = $_REQUEST['failed'] ?? 0;
 ?>
 <main class="h-100">

@@ -100,7 +100,6 @@ require_once '../authorize.php';
     </div>
 </div>
 <script>
-    // member edited toast.
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -111,20 +110,17 @@ require_once '../authorize.php';
     });
 
     <?php
-    // If a member was edited, show the toast!
     if (isset($_REQUEST['memberEdited'])) echo "Toast.fire({title: 'Member Updated!'});";
     ?>
 
     let members = [];
 
     function showPrograms() {
-        // Display or hide the proper DOM Elements to see the programs.
         $('#program-card').removeClass('d-none');
         $('#detail-card').addClass('d-none');
     }
 
     function hidePrograms() {
-        // Display or hide the proper DOM Elements to see the details.
         $('#program-card').addClass('d-none');
         $('#program-data').html('');
         $('#detail-card').removeClass('d-none');
@@ -134,15 +130,12 @@ require_once '../authorize.php';
 
     searchField.on('keypress', (val) => val.code === 'Enter' ? search() : '');
 
-    // initialize the members table.
     getMembers();
 
-    // search the table.
     async function search() {
         let tableEl = $('#table_body');
         let s = $('#search').val().toLowerCase();
 
-        // filter the members based on the names.
         let filtered = members.filter(it => {
             let name = it.firstName + " " + it.lastName;
             return name.toLowerCase().includes(s);
@@ -151,7 +144,6 @@ require_once '../authorize.php';
         tableEl.html('');
         let html = '';
 
-        // generate the new table.
         filtered.forEach(val => {
             html += generateLine(val);
         });
@@ -159,7 +151,6 @@ require_once '../authorize.php';
         tableEl.html(html);
     }
 
-    // get all the members and display them in the table.
     async function getMembers() {
         const response = await fetch(`/service/api.php?action=get_members`);
 
@@ -170,7 +161,6 @@ require_once '../authorize.php';
         let json = await response.json();
         let html = '';
 
-        // generate the html for each line.
         json.forEach(val => html += generateLine(val));
 
         setMembers(json);
@@ -178,13 +168,12 @@ require_once '../authorize.php';
         $('#table_body').html(html);
     }
 
-    // Keeps the members for later.
     function setMembers(json) {
         members = [...json];
     }
 
-    // given an array with member elements, generate one table row!
     function generateLine(val) {
+        console.log(val);
         return ` <tr class="${val['isInactive'] ? 'table-danger' : ''}" onclick="get(${val['id']})">
                 <td>${val['firstName']}</td>
                 <td>${val['lastName']}</td>
@@ -195,23 +184,18 @@ require_once '../authorize.php';
     // get all the programs that the user is registered for.
     async function getParticipantPrograms(id) {
 
-        // fetch the programs!
         let response = await fetch('/service/api.php?action=getProgramsByUser&id=' + id);
         if (!response.ok) return;
 
-        // get the member object with the id.
         let mem = members.find(it => it.id === id);
 
-        // parse the details.
         let json = await response.json();
         let html = '';
 
         $('#userName').text(mem.firstName + " " + mem.lastName);
 
-        // filter out the inactive programs (these are cancelled and no longer registed for)
         json = json.filter(val => val.inactive === false);
 
-        // generate the html for the table.
         if (json.length === 0) html += '<tr><td colspan="3" class="text-center text-muted">No Active Registrations</td></tr>';
         json.forEach((val) => html += `<tr><td>${val.name}</td><td>${val.location}</td><td>${val.days.join(", ")}</td></tr>`);
 
@@ -262,13 +246,11 @@ require_once '../authorize.php';
 
     // call the endpoint to enable the user
     async function enable(id) {
-        // find the member with the id.
         let member = members.find(it => it.id === id);
 
         let response = await fetch('/service/api.php?action=enableUser&id=' + id);
 
         if (response.ok) {
-            // Show the popup message.
             Swal.fire({
                 title: `${member.firstName} ${member.lastName} was enabled!`,
                 icon: 'success',
@@ -319,14 +301,12 @@ require_once '../authorize.php';
 
     }
 
-    // Disables the member that has the provided id.
     function cancel(id) {
-        // find the member.
         let member = members.find(it => it.id === id);
 
-        // prompt the user to disable.
         Swal.fire({
             title: `Disable ${member.firstName} ${member.lastName}?`,
+            text: "This action cannot be undone!",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonColor: '#3085d6',
@@ -337,10 +317,8 @@ require_once '../authorize.php';
                 'The user will be retained for historical purposes.</small>'
         }).then((result) => {
                 if (result.isConfirmed) {
-                    // If they click yes, send the request to disable it.
                     fetch('/service/api.php?action=disableMember&id=' + id).then((res) => {
                         if (res.ok) {
-                            // If successful, print success message.
                             Swal.fire({
                                 title: 'Disabled!',
                                 text: `${member.firstName} ${member.lastName}'s account has been disabled.`,
@@ -352,7 +330,6 @@ require_once '../authorize.php';
                                 getMembers();
                             });
                         } else {
-                            // If fails, print failed message.
                             Swal.fire({
                                 title: 'Failed!',
                                 text: `An error has occurred!`,
@@ -366,6 +343,7 @@ require_once '../authorize.php';
             }
         )
     }
+
 
 </script>
 <style>

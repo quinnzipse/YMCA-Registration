@@ -7,7 +7,16 @@ $userProgs = array();
 if ($loggedIn) $userProgs = Program::getParticipantProgram($loggedIn->userID);
 
 
-function print_program($program, bool $disabled, bool $registered)
+/**
+ * print_program Generates a card for a given program. 
+ * 
+ * @param Program $program 
+ * @param bool $disabled 
+ * @param bool $registered 
+ * @access public
+ * @return void
+ */
+function print_program(Program $program, bool $disabled, bool $registered)
 {
     global $loggedIn;
     $pID = $program->id;

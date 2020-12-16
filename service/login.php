@@ -24,7 +24,7 @@ if ($result) {
         // Direct them back to form with failed message.
         header("Location: /login.php?failed=1");
 
-        http_response_code(400);
+        http_send_status(400);
         exit(400);
 
     } else {
@@ -33,7 +33,7 @@ if ($result) {
 
         if ($user->inactive == 1) {
             header("Location: /login.php?failed=2");
-            http_response_code(400);
+            http_send_status(400);
             exit(400);
         }
 
@@ -51,7 +51,7 @@ if ($result) {
                 $error = json_encode(mysqli_error($mysql->conn));
                 header("Location: /login.php?failed=3&reason=$error");
 
-                http_response_code(500);
+                http_send_status(500);
                 exit(500);
             } else {
                 // Give the uuid to the web browser as a cookie for 5 minutes.
@@ -71,13 +71,13 @@ if ($result) {
             // Direct them back to form with failed message.
             header("Location: /login.php?failed=1");
 
-            http_response_code(400);
+            http_send_status(400);
             exit(400);
         }
     }
 } else {
     $error = json_encode(mysqli_error($mysql->conn));
     header("Location: /login.php?failed=3&reason=$error");
-    http_response_code(500);
+    http_send_status(500);
     exit(500);
 }

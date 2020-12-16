@@ -1,6 +1,15 @@
 <?php
 require_once("service/MySQLConnection.php");
 
+/**
+ * Program PHP object of the Program mySQL table.  
+ * 
+ * @package 
+ * @version $id$
+ * @copyright 2020
+ * @author Jordan Waughtal, Quinn Zipse, Ben Boehlke 
+ * @license All rights reserved.
+ */
 class Program
 {
     public int $id = 0;
@@ -20,12 +29,19 @@ class Program
     private int $dayOfWeek;
     public array $days;
 
+    /**
+     * __construct 
+     * 
+     * @access public
+     * @return void
+     */
     public function __construct()
     {
     }
-
     /**
-     * returns how many people are registered for program.
+     * programCount Counts the programs in the table.
+     * 
+     * @return int 
      */
     function programCount(): int
     {
@@ -41,6 +57,11 @@ class Program
         return mysqli_fetch_assoc($result)['people'];
     }
 
+    /**
+     * getPrograms gets a list of 20 programs to display.
+     * @param $page the set of 20 pages to list.
+     * @return array  
+     */
     static function getPrograms(int $page = 0): array
     {
         $pageLength = 20;
@@ -59,12 +80,22 @@ class Program
         return $res;
     }
 
+    /**
+     * disableProgram sets the disable flag
+     * 
+     * @return bool returns true if successful 
+     */
     function disableProgram(): bool
     {
         $this->inactive = true;
         return $this->save();
     }
 
+    /**
+     * isConfilicting compares two programs and checks if their scheduals overlap
+     * @param $other The program to compare.
+     * @return true if the scheduals overlap 
+     */
     function isConflicting(Program $other): bool
     {
         if ($this->inactive || $other->inactive) return false;
@@ -85,6 +116,11 @@ class Program
         return false;
     }
 
+    /**
+     * getProgramByUser Gets all the programs a user has signed up. 
+     * @param $id The user's id.
+     * @returns an array of Programs.
+     */
     public static function getProgramsByUser(int $id): array
     {
         $mysql = new MySQLConnection();
@@ -100,6 +136,10 @@ class Program
         return $res;
     }
 
+    /**
+     * save Writes this program to the database.
+     * @return True if succsessful.
+     */
     function save(): bool
     {
         $mysql = new MySQLConnection();
@@ -131,6 +171,10 @@ class Program
         return $result;
     }
 
+    /**
+     * programFactory creates a Program object from an as result from the mysql object.
+     * @return a Program object. 
+     */
     static function programFactory(object $input_program): Program
     {
         $program = new Program();
@@ -154,6 +198,12 @@ class Program
         return $program;
     }
 
+    /**
+     * getParticipantProgram
+     * @param $user The user's ID
+     * @param $status The status of the class (0 = active; 1 = cancelled (not notified); 2 = cancelled)
+     * @return returns the list of programs that a user has registered for with a matching status.
+     */
     static function getParticipantProgram(int $user, int $status = 0): array
     {
         $result = array();
@@ -170,6 +220,11 @@ class Program
         return $result;
     }
 
+    /**
+     * get fetchs a program from the database with the matching id
+     * @param $id The id of the program to fetch
+     * @return a program object 
+     */
     static function get(int $id): Program
     {
         $mysql = new MySQLConnection();
@@ -181,6 +236,10 @@ class Program
         return Program::programFactory($result);
     }
 
+    /**
+     * getDaysOfWeek returns an array with the value in the mysql db as keys for the text for the day of the week.
+     * @return an array with the day's of the week the program is on. 
+     */
     function getDaysOfWeek(): array
     {
         $daysOfTheWeek = array();
@@ -196,6 +255,13 @@ class Program
         return $daysOfTheWeek;
     }
 
+    /**
+     * setDaysOfWeek sets the days of the week. 
+     * 
+     * @param array $days The days as strings 
+     * @access public
+     * @return void
+     */
     function setDaysOfWeek(array $days)
     {
         $this->dayOfWeek = 0;
@@ -225,6 +291,15 @@ class Program
         }
     }
 
+    /**
+     * search searchs for Programs based on a search value 
+     * 
+     * @param string $search_val The string to search 
+     * @return an array of Programs     
+     * @static
+     * @access public
+     * @return void
+     */
     static function search(string $search_val)
     {
         $mysql = new MySQLConnection();
@@ -247,6 +322,12 @@ class Program
         }
     }
 
+    /**
+     * createProgram  adds a program to the db.
+     *  
+     * @access public
+     * @return void
+     */
     function createProgram()
     {
         $this->name = $_REQUEST['name'];
@@ -274,6 +355,11 @@ class Program
         return $this->save();
     }
 
+    /**
+     * editProgram Updates a program in the db.
+     * @param id the program's id. 
+     * @return void
+     */
     static function editProgram(int $id = -1): bool
     {
         if ($id != -1) {
@@ -287,11 +373,17 @@ class Program
     }
 
 
+    /**
+     * getRoster Gets a list of everyone in a program. 
+     * 
+     * @access public
+     * @return void
+     */
     public function getRoster()
     {
         $mysql = new MySQLConnection();
 
-        $sql = "SELECT LastName, FirstName, ParticipantID, Email, MembershipStatus FROM Participant_Programs LEFT JOIN Participants AS P ON ParticipantID = P.ID WHERE ProgramID = $this->id AND status != 1";
+        $sql = "SELECT LastName, FirstName, ParticipantID, Email, MembershipStatus FROM Participant_Programs LEFT JOIN Participants AS P ON ParticipantID = P.ID WHERE ProgramID = $this->id AND status = 0";
 
         return mysqli_query($mysql->conn, $sql)->fetch_all();
     }

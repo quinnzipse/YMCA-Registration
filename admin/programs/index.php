@@ -8,6 +8,13 @@ require_once '../authorize.php';
 </head>
 <body>
 <?php include 'menu.php'; ?>
+<!--<nav aria-label="breadcrumb">-->
+<!--    <ol class="breadcrumb">-->
+<!--        <li class="breadcrumb-item"><a href="index.php">Staff</a></li>-->
+<!--        <li class="breadcrumb-item"><a href="manage.php">Manage</a></li>-->
+<!--        <li class="breadcrumb-item active" aria-current="page">Programs</li>-->
+<!--    </ol>-->
+<!--</nav>-->
 <div class="container-fluid mt-4">
     <div class="row pr-2" style="height: calc(100vh - 80px)">
         <div class="col-xl-4 col-lg-5" style="height: available">
@@ -137,14 +144,12 @@ require_once '../authorize.php';
 
     const programs = [];
 
-    // shows the detail card!
     function hideRoster() {
         $('#roster-card').addClass('d-none');
         $('#roster-data').html('');
         $('#detail-card').removeClass('d-none');
     }
 
-    // requests the roster and generates the html.
     async function getRoster(id) {
         let request = await fetch('/service/api.php?action=getRoster&programID=' + id);
         let json = await request.json();
@@ -179,13 +184,16 @@ require_once '../authorize.php';
         $('#roster-card').removeClass('d-none');
     }
 
+    function deleteProgram(id) {
+        // TODO!!!
+    }
+
     let searchField = $("#search");
 
     searchField.on('keypress', (val) => val.code === 'Enter' ? search() : '');
 
     getPrograms();
 
-    // fetches the results of a search with the value in the search box. Generates the table html.
     async function search() {
         let value = searchField.val();
         console.log(value);
@@ -198,7 +206,6 @@ require_once '../authorize.php';
         let json = await response.json();
         let html = '';
 
-        // generate table html
         json.forEach(val => {
             html += generateLine(val);
         });
@@ -206,7 +213,6 @@ require_once '../authorize.php';
         $('#table_body').html(html);
     }
 
-    // grab the programs and generate the table.
     async function getPrograms() {
         const response = await fetch(`/service/api.php?action=get_programs`);
 
@@ -222,7 +228,6 @@ require_once '../authorize.php';
         $('#table_body').html(html);
     }
 
-    // generates the html for one table row.
     function generateLine(val) {
         if (val.inactive == 1) return '';
         programs.push(val);
@@ -263,7 +268,6 @@ require_once '../authorize.php';
         editButton.on('click', () => window.location = `editProgram.php?p=${id}`);
     }
 
-    // Fills the details card in!
     function get(id) {
 
         // Find the program in the array.
@@ -301,7 +305,6 @@ require_once '../authorize.php';
 
     }
 
-    // Cancel the program that has the given id!
     function cancel(id) {
         let program = programs.find(it => it.id === id);
 
