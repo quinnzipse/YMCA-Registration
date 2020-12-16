@@ -1,4 +1,6 @@
-<?php require_once 'authorize.php'; ?>
+<?php
+//admin home page
+require_once 'authorize.php'; ?>
 <html lang="en">
 <head>
     <title>Staff Home</title>
