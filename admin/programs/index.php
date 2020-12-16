@@ -8,13 +8,6 @@ require_once '../authorize.php';
 </head>
 <body>
 <?php include 'menu.php'; ?>
-<!--<nav aria-label="breadcrumb">-->
-<!--    <ol class="breadcrumb">-->
-<!--        <li class="breadcrumb-item"><a href="index.php">Staff</a></li>-->
-<!--        <li class="breadcrumb-item"><a href="manage.php">Manage</a></li>-->
-<!--        <li class="breadcrumb-item active" aria-current="page">Programs</li>-->
-<!--    </ol>-->
-<!--</nav>-->
 <div class="container-fluid mt-4">
     <div class="row pr-2" style="height: calc(100vh - 80px)">
         <div class="col-xl-4 col-lg-5" style="height: available">
@@ -182,10 +175,6 @@ require_once '../authorize.php';
         // Show our work off!
         $('#detail-card').addClass('d-none');
         $('#roster-card').removeClass('d-none');
-    }
-
-    function deleteProgram(id) {
-        // TODO!!!
     }
 
     let searchField = $("#search");

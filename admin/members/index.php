@@ -42,6 +42,7 @@ require_once '../authorize.php';
                         <button class="btn btn-sm btn-info" id="program">View Programs</button>
                         <button class="btn btn-sm btn-primary" id="edit">Edit</button>
                         <button class="btn btn-sm btn-danger" id="cancel">Disable</button>
+                        <button class="btn btn-sm btn-danger" id="enable">Enable</button>
                     </div>
                 </div>
             </div>
@@ -114,6 +115,7 @@ require_once '../authorize.php';
 
     let members = [];
 
+    // Display the
     function showPrograms() {
         $('#program-card').removeClass('d-none');
         $('#detail-card').addClass('d-none');
@@ -180,19 +182,26 @@ require_once '../authorize.php';
             </tr>`;
     }
 
+    // get all the programs that the user is registered for.
     async function getParticipantPrograms(id) {
+
+        // fetch the programs!
         let response = await fetch('/service/api.php?action=getProgramsByUser&id=' + id);
         if (!response.ok) return;
 
+        // get the member object with the id.
         let mem = members.find(it => it.id === id);
 
+        // parse the details.
         let json = await response.json();
         let html = '';
 
         $('#userName').text(mem.firstName + " " + mem.lastName);
 
+        // filter out the inactive programs (these are cancelled and no longer registed for)
         json = json.filter(val => val.inactive === false);
 
+        // generate the html for the table.
         if (json.length === 0) html += '<tr><td colspan="3" class="text-center text-muted">No Active Registrations</td></tr>';
         json.forEach((val) => html += `<tr><td>${val.name}</td><td>${val.location}</td><td>${val.days.join(", ")}</td></tr>`);
 
@@ -201,23 +210,71 @@ require_once '../authorize.php';
         showPrograms();
     }
 
-    function setupButtons(id) {
+    // Shows buttons, hides them, sets the onclicklisteners
+    function setupButtons(id, inactive) {
+
         // get the buttons
         let programButton = $('#program');
         let cancelButton = $('#cancel');
         let editButton = $('#edit');
+        let enableButton = $('#enable');
 
         // Destroy the previous onclick listeners.
         programButton.off();
         cancelButton.off();
         editButton.off();
+        enableButton.off();
 
-        // Create new listeners
-        programButton.on('click', () => getParticipantPrograms(id));
-        cancelButton.on('click', () => cancel(id));
-        editButton.on('click', () => window.location = `editMember.php?m=${id}`);
+        // Hide all the buttons
+        programButton.hide();
+        cancelButton.hide();
+        editButton.hide();
+        enableButton.hide();
+
+        if (!inactive) {
+            // Create new listeners
+            programButton.on('click', () => getParticipantPrograms(id));
+            cancelButton.on('click', () => cancel(id));
+            editButton.on('click', () => window.location = `editMember.php?m=${id}`);
+
+            // show correct buttons
+            programButton.show();
+            cancelButton.show();
+            editButton.show();
+        } else {
+            // Create new listeners
+            enableButton.on('click', () => enable(id));
+
+            // show correct buttons
+            enableButton.show();
+        }
     }
 
+    // call the endpoint to enable the user
+    async function enable(id) {
+        // find the member with the id.
+        let member = members.find(it => it.id === id);
+
+        let response = await fetch('/service/api.php?action=enableUser&id=' + id);
+
+        if (response.ok) {
+            // Show the popup message.
+            Swal.fire({
+                title: `${member.firstName} ${member.lastName} was enabled!`,
+                icon: 'success',
+                timer: 1500,
+                timerProgressBar: true
+            })
+        } else {
+            console.log("That didn't work")
+        }
+
+        // refresh the list.
+        await getMembers();
+        get(id);
+    }
+
+    // setup the card of info given the id (called from row onclick)
     function get(id) {
 
         // Find the program in the array.
@@ -240,26 +297,26 @@ require_once '../authorize.php';
         if (member.isInactive) {
             badge.removeClass('d-none');
             badge.addClass('d-inline');
-            $('button').prop('disabled', true);
         } else {
             badge.removeClass('d-inline');
             badge.addClass('d-none');
-            $('button').prop('disabled', false);
         }
 
-        setupButtons(id);
+        setupButtons(id, member.isInactive);
 
         // Make it visible
         hidePrograms();
 
     }
 
+    // Disables the member that has the provided id.
     function cancel(id) {
+        // find the member.
         let member = members.find(it => it.id === id);
 
+        // prompt the user to disable.
         Swal.fire({
             title: `Disable ${member.firstName} ${member.lastName}?`,
-            text: "This action cannot be undone!",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonColor: '#3085d6',
@@ -270,8 +327,10 @@ require_once '../authorize.php';
                 'The user will be retained for historical purposes.</small>'
         }).then((result) => {
                 if (result.isConfirmed) {
+                    // If they click yes, send the request to disable it.
                     fetch('/service/api.php?action=disableMember&id=' + id).then((res) => {
                         if (res.ok) {
+                            // If successful, print success message.
                             Swal.fire({
                                 title: 'Disabled!',
                                 text: `${member.firstName} ${member.lastName}'s account has been disabled.`,
@@ -283,6 +342,7 @@ require_once '../authorize.php';
                                 getMembers();
                             });
                         } else {
+                            // If fails, print failed message.
                             Swal.fire({
                                 title: 'Failed!',
                                 text: `An error has occurred!`,
@@ -296,7 +356,6 @@ require_once '../authorize.php';
             }
         )
     }
-
 
 </script>
 <style>

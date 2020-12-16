@@ -28,6 +28,17 @@ switch ($action) {
             header("Location: /admin/staff/?staffAdded=1");
         }
         break;
+    case 'enableUser':
+        // If given an id, enable it.
+        if (isset($_REQUEST['id'])) {
+            $user = User::get($_REQUEST['id']);
+
+            // If enable fails, send error code
+            if(!$user->enable()){
+                http_response_code(500);
+            }
+        }
+        break;
     case 'createProgram':
         $program = new Program();
         if (!$program->createProgram()) {

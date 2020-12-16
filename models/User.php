@@ -33,8 +33,8 @@ class User
         $sql = "UPDATE Participant_Programs SET status = 1 WHERE ParticipantID = $this->id";
         $result = mysqli_query($mysql->conn, $sql);
 
-        if(!$result) return false;
-        
+        if (!$result) return false;
+
         return $this->save();
     }
 
@@ -47,6 +47,14 @@ class User
         $user->status = $_REQUEST['status'];
 
         return $user->save();
+    }
+
+    function enable(): bool
+    {
+        $mysql = new MySQLConnection();
+        $sql = "UPDATE Participants SET inactive = 0 WHERE ID = $this->id";
+
+        return mysqli_query($mysql->conn, $sql);
     }
 
     public static function get(int $id): User
