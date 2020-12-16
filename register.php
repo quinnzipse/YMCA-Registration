@@ -1,5 +1,8 @@
 <html lang="en">
-<?php include 'menu.php'; ?>
+<?php
+//register as a new user page
+include 'menu.php';
+?>
 <head>
     <title>Register</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"

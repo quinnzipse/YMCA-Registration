@@ -2,6 +2,7 @@
 //Turn on for debug mode:
 $DEBUG = true;
 
+//check if user is logged in and create authentication
 $host =  'http://' . $_SERVER['HTTP_HOST'];
 require_once  ($_SERVER["DOCUMENT_ROOT"] . '/service/Auth.php');
 $auth = new Auth();
@@ -23,6 +24,7 @@ $user = $auth->isLoggedIn();
         <div class="container-fluid">
         <div class="navbar-nav">
             <?php
+                //dynamic menu based on whether the user is logged in or not
                 echo "  <a class='nav-link' href='$host/'>Home</a>
                         <a class='nav-link' href='$host/program/'>Programs</a>";
                         if ($user) {

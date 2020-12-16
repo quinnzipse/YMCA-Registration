@@ -3,14 +3,24 @@
     <title>YMCA Home</title>
 </head>
 <?php
+//home page of the website
+
+//program model used for displaying the programs the user is registered for (if logged in)
 require 'models/Program.php';
+//include the menu
 include 'menu.php';
+
+//loggedIn is the user, NULL if not logged in
 $loggedIn = $auth->isLoggedIn();
+//programs the user is registered for
 $userProgs = array();
 
+//welcome messages!
 echo "<script>
+//message if the user just arrived to the page
 if (window.sessionStorage.getItem('firstVisit') == null) {
     window.sessionStorage.setItem('firstVisit', 'true');
+    //create pop up
     Swal.fire({
         title: 'Welcome!',
         html: 'You are not logged in and cannot register for programs right now.  Would you like to log in?',
@@ -19,6 +29,7 @@ if (window.sessionStorage.getItem('firstVisit') == null) {
         showDenyButton: true,
         denyButtonText: 'Not Now'
     }).then((result) => {
+        //if the user clicked the pop up's login button, redirect to login page
         if (result.isConfirmed) {
             window.location.replace('login.php');
         }
@@ -26,6 +37,7 @@ if (window.sessionStorage.getItem('firstVisit') == null) {
 } 
 </script>";
 
+//if the user just logged out, display just logged out pop up
 if (isset($_REQUEST['loggedOut'])) {
     echo "
     <script>
@@ -44,6 +56,7 @@ if (isset($_REQUEST['loggedOut'])) {
     </script>
     ";
 } else if (isset($_REQUEST['loggedIn'])) {
+    //if the user just logged in, welcome the user by name
     echo "
     <script>
         Swal.fire({
@@ -61,12 +74,19 @@ if (isset($_REQUEST['loggedOut'])) {
     ";
 }
 
+/**
+ * function to print the programs the user is registered for
+ *
+ * @param $program the program to be printed
+ */
 function print_program($program) {
+    //get program info
     $sdate = $program->startDate->format("M, d Y");
     $edate = $program->endDate->format("M, d Y");
     $stime = $program->startTime->format('g:i A');
     $etime = $program->endTime->format('g:i A');
     $days_of_week = join("'s, ", $program->getDaysOfWeek());
+    //display program
     echo "<div class='col-lg-4 col-md-6 mt-3 '>";
     echo "\t<div class='card border-dark h-100' style='border-radius: 20px'>";
     echo "\t\t<div class='card-body'>";
@@ -91,6 +111,7 @@ function print_program($program) {
 
 
 <?php
+//if the user is logged in, display system notifications and display programs the user is registered for
 if ($loggedIn) {
     $notif = '';
     $id = $loggedIn->userID ?? $loggedIn->ID;
@@ -136,6 +157,7 @@ if ($loggedIn) {
                 </div>      
     </div>';
 } else {
+    //display the carousal slide show
     echo '
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="width: 72vw; margin-left: auto; margin-right: auto; margin-top: 5vh; max-height: 128vh">
     <ol class="carousel-indicators">

@@ -1,17 +1,32 @@
+
 <?php
+//page for viewing account info.
+
+//program model is used for displaying registered classes
 require "models/Program.php";
+//including the standard menu
 include 'menu.php';
+//check whether the user is logged in
 if ($user == null):
+    //if not logged in, the user is sent to the login page
     header("Location: $host/login.php");
 endif;
 
+/**
+ * function to print the programs that the user is registered for
+ *
+ * @param $program is the program that needs to be displayed on the page
+ */
 function print_program($program)
 {
+    //getting the info about the program to be displayed
     $sdate = $program->startDate->format("M, d Y");
     $edate = $program->endDate->format("M, d Y");
     $stime = $program->startTime->format('g:i A');
     $etime = $program->endTime->format('g:i A');
     $days_of_week = join("'s, ", $program->getDaysOfWeek());
+
+    //print the program
     echo "<div class='col-lg-4 col-md-6 mt-3 '>";
     echo "\t<div class='card border-dark h-100' style='border-radius: 20px'>";
     echo "\t\t<div class='card-body'>";
@@ -60,6 +75,7 @@ function print_program($program)
     </div>
 </div>
 <?php if ($DEBUG):
+    //display the users ID when debugging
     echo "<tr>
 			<td>ID</td>
 			<td>$user->ID</td>
@@ -69,10 +85,12 @@ endif;
 <br/>
 <button>UPDATE</button>
 <br/>
+
 <h2>Registered Classes</h2>
 <div class="container">
     <div class="row mt-3">
         <?php
+        //get a array of programs the user it registered for and print them
         $progs = Program::getParticipantProgram($user->ID ?? $user->userID);
         foreach ($progs as $obj) {
             print_program($obj);
