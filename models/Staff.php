@@ -1,16 +1,9 @@
 <?php
-//staff model
 include_once 'MembershipStatus.php';
 include_once 'User.php';
 
-/**
- * Class Staff
- *
- * extends from User
- */
 class Staff extends User
 {
-    //staff info variables
     public string $ssn;
     public DateTime $dob;
     public string $middleInit;
@@ -19,12 +12,6 @@ class Staff extends User
     public string $phoneNumber;
     public string $address;
 
-    /**
-     * edit the staff member
-     *
-     * @param int $id the id of the staff member
-     * @return bool whether the edit worked or not
-     */
     public static function editStaff(int $id): bool
     {
         $staff = self::get($id);
@@ -55,12 +42,6 @@ class Staff extends User
         $this->address = $input_user->Address;
     }
 
-    /**
-     * get the array of staff members
-     *
-     * @param int $page the amount of space on the page
-     * @return array    an array of the staff members
-     */
     static function getStaff(int $page = 0): array
     {
         $pageLength = 20;
@@ -84,12 +65,6 @@ class Staff extends User
         return $res;
     }
 
-    /**
-     * search for staff by a particular value associated with that staff member
-     *
-     * @param string $search_val
-     * @return array|mixed|string
-     */
     static function search(string $search_val)
     {
         $mysql = new MySQLConnection();
@@ -113,12 +88,6 @@ class Staff extends User
         }
     }
 
-    /**
-     * save a staff member after creation
-     *
-     * @param bool $new used for creating member
-     * @return bool whether the staff member was saved in the database
-     */
     function save($new = true): bool
     {
         $mysql = new MySQLConnection();
@@ -175,12 +144,6 @@ class Staff extends User
         return $this->save(false);
     }
 
-    /**
-     * get a staff member based on the staff member id
-     *
-     * @param int $id   id of staff member
-     * @return Staff    returns the staff member as a staff type
-     */
     public static function get(int $id): Staff
     {
         $mysql = new MySQLConnection();
@@ -197,12 +160,6 @@ class Staff extends User
         return Staff::staffFactory($obj);
     }
 
-    /**
-     * check whether a staff member exists based on the id
-     *
-     * @param int $id id of the staff member
-     * @return bool whether the staff member exists
-     */
     static function exists(int $id): bool
     {
         $mysql = new MySQLConnection();
@@ -217,12 +174,6 @@ class Staff extends User
         return $result->num_rows > 0;
     }
 
-    /**
-     * creates a staff member object
-     *
-     * @param object $input_user the user object
-     * @return Staff    returns the user as a staff member object
-     */
     static function staffFactory(object $input_user): Staff
     {
         $user = new Staff();

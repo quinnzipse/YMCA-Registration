@@ -10,7 +10,7 @@ require_once 'Staff.php';
  */
 class User
 {
-    //user info
+
     public int $id;
     public string $email;
     public string $firstName;
@@ -20,26 +20,22 @@ class User
     public bool $isStaff;
     public bool $isInactive;
 
-    /**
-     * User constructor.
-     */
     public function __construct()
     {
 
     }
 
-    /**
-     * disable a user
-     *
-     * @return bool return whether the user was disabled
-     */
     public function disableUser(): bool
     {
         $mysql = new MySQLConnection();
         $this->isInactive = true;
 
-        //search the database
         $sql = "UPDATE Participant_Programs SET status = 1 WHERE ParticipantID = $this->id";
+        $result = mysqli_query($mysql->conn, $sql);
+
+        if (!$result) return false;
+
+        $sql = "DELETE FROM Authenticated_Users WHERE userID = $this->id";
         $result = mysqli_query($mysql->conn, $sql);
 
         if (!$result) return false;
@@ -47,15 +43,8 @@ class User
         return $this->save();
     }
 
-    /**
-     * edit a user
-     *
-     * @param int $id   user id to be edited
-     * @return bool     whether the edit worked
-     */
     public static function edit(int $id): bool
     {
-        //change user data
         $user = User::get($id);
         $user->firstName = $_REQUEST['first'];
         $user->lastName = $_REQUEST['last'];
@@ -65,11 +54,6 @@ class User
         return $user->save();
     }
 
-    /**
-     * reenable a user account
-     *
-     * @return bool returns whether the account was reenabled
-     */
     function enable(): bool
     {
         $mysql = new MySQLConnection();
@@ -78,43 +62,31 @@ class User
         return mysqli_query($mysql->conn, $sql);
     }
 
-    /**
-     * get a user object based on the user id
-     *
-     * @param int $id the id of the user to be got
-     * @return User the user object of that user
-     */
     public static function get(int $id): User
     {
         $mysql = new MySQLConnection();
 
-        //find the user
         $sql = "SELECT * FROM Participants WHERE ID = $id";
         $result = mysqli_query($mysql->conn, $sql);
 
-        ///fetch as user object
         $obj = mysqli_fetch_object($result);
         return User::userFactory($obj, false);
     }
 
-    /**
-     * search for a user based on an associated value
-     *
-     * @param string $search_val value to be searched
-     * @return mixed|string search results
-     */
+    function isFree($classID)
+    {
+        // TODO: Check to see if the user is registered for another class during this time.
+    }
+
     static function search(string $search_val)
     {
         $mysql = new MySQLConnection();
         $val = metaphone($search_val);
 
-        //search the databse
         $sql = "SELECT * FROM Participants WHERE indexed LIKE '%$val%'";
 
-        //set the result
         $result = mysqli_query($mysql->conn, $sql);
 
-        //check that result is not null
         if ($result) {
             return $result->fetch_all();
         } else {
@@ -122,26 +94,17 @@ class User
         }
     }
 
-    /**
-     * get a list of users
-     *
-     * @param int $page value for computing
-     * @return array the array of users
-     */
     static function getUsers(int $page = 0): array
     {
         $pageLength = 20;
         $mysql = new MySQLConnection();
         $offset = $page * $pageLength;
 
-        //search database
         $sql = "SELECT * FROM Participants LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
 
-        //set the result to be the array
         $res = array();
 
-        //add users to the results
         while ($obj = mysqli_fetch_object($result)) {
             array_push($res, User::userFactory($obj, false));
         }
@@ -149,26 +112,17 @@ class User
         return $res;
     }
 
-    /**
-     * get non staff members
-     *
-     * @param int $page value for computing
-     * @return array array of non staff users
-     */
     static function getNonStaff(int $page = 0): array
     {
         $pageLength = 20;
         $mysql = new MySQLConnection();
         $offset = $page * $pageLength;
 
-        //search database
         $sql = "SELECT * FROM Participants WHERE MembershipStatus != 3 LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
 
-        //set the result to an array
         $res = array();
 
-        //add nonstaff users to the array
         while ($obj = mysqli_fetch_object($result)) {
             array_push($res, User::userFactory($obj, false));
         }
@@ -176,16 +130,8 @@ class User
         return $res;
     }
 
-    /**
-     * turn a user from a general object to a user object
-     *
-     * @param object $input_user the user to be converted
-     * @param bool $hasStaff whether the user is staff
-     * @return User user object
-     */
     static function userFactory(object $input_user, bool $hasStaff): User
     {
-        //check the users membership status
         if ($input_user->MembershipStatus == MembershipStatus::STAFF && $hasStaff) {
             $user = new Staff();
             $user->fill($input_user);
@@ -193,7 +139,6 @@ class User
             $user = new User();
         }
 
-        //fill user info
         $user->id = $input_user->ID;
         $user->indexed = $input_user->indexed;
         $user->firstName = $input_user->FirstName;
@@ -205,19 +150,12 @@ class User
         return $user;
     }
 
-    /**
-     * make the user a staff member
-     *
-     * @return bool whether the user is now a staff member
-     */
     function makeStaff(): bool
     {
-        //create a new staff object
         $staff = new Staff();
         $staff->status = MembershipStatus::STAFF;
         $staff->id = $this->id;
 
-        //set staff accounts user status
         $staff->phoneNumber = $_POST['phone'];
         $staff->middleInit = $_POST['middle'];
         $staff->salary = $_POST['salary'];
@@ -229,25 +167,17 @@ class User
         return $staff->save(Staff::exists($this->id));
     }
 
-    /**
-     * save the user
-     *
-     * @return bool whether the user was saved in the database
-     */
     function save(): bool
     {
         $mysql = new MySQLConnection();
 
-        //check if account is inactive
         $inactive = ($this->isInactive ? 1 : 0);
 
-        //update the account in the data base
         $sql = "UPDATE Participants SET Email = '$this->email', FirstName = '$this->firstName', 
                         LastName = '$this->lastName', inactive = $inactive, 
                         MembershipStatus = $this->status WHERE ID = $this->id";
         $result = mysqli_query($mysql->conn, $sql);
 
-        //check if it worked
         if (!$result) {
             echo mysqli_error($mysql->conn);
         }
