@@ -13,6 +13,7 @@ require_once 'models/Staff.php';
 // ANYTHING in this file will require the user to be logged in.
 $action = $_GET['action'] ?? '';
 switch ($action) {
+    //check what the api is being used for
     case 'addStaff':
         echo 'addStaff';
         if (isset($_POST['id'])) {
@@ -112,6 +113,7 @@ switch ($action) {
         }
         exit(200);
     case 'register':
+        //register a new program
         $programID = $_GET['programID'] ?? '';
         $mysql = new MySQLConnection();
         $a = new Auth();
@@ -126,6 +128,7 @@ switch ($action) {
         header("Location: /program");
         break;
     case 'cancel':
+        //cancel a program
         $programID = $_GET['programID'] ?? '';
         $mysql = new MySQLConnection();
         $a = new Auth();
@@ -182,7 +185,4 @@ switch ($action) {
         exit(400);
 }
 
-//if (isset($_GET['debug'])) {
-
-//}
 

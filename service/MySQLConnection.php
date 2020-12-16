@@ -23,6 +23,9 @@ class MySQLConnection
         }
     }
 
+    /**
+     * ends the SQL connection
+     */
     public function __deconstruct()
     {
         $this->conn->close();
