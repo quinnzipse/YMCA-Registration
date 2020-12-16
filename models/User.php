@@ -38,6 +38,7 @@ class User
         $mysql = new MySQLConnection();
         $this->isInactive = true;
 
+        //search the database
         $sql = "UPDATE Participant_Programs SET status = 1 WHERE ParticipantID = $this->id";
         $result = mysqli_query($mysql->conn, $sql);
 
@@ -54,6 +55,7 @@ class User
      */
     public static function edit(int $id): bool
     {
+        //change user data
         $user = User::get($id);
         $user->firstName = $_REQUEST['first'];
         $user->lastName = $_REQUEST['last'];
@@ -86,9 +88,11 @@ class User
     {
         $mysql = new MySQLConnection();
 
+        //find the user
         $sql = "SELECT * FROM Participants WHERE ID = $id";
         $result = mysqli_query($mysql->conn, $sql);
 
+        ///fetch as user object
         $obj = mysqli_fetch_object($result);
         return User::userFactory($obj, false);
     }
@@ -104,10 +108,13 @@ class User
         $mysql = new MySQLConnection();
         $val = metaphone($search_val);
 
+        //search the databse
         $sql = "SELECT * FROM Participants WHERE indexed LIKE '%$val%'";
 
+        //set the result
         $result = mysqli_query($mysql->conn, $sql);
 
+        //check that result is not null
         if ($result) {
             return $result->fetch_all();
         } else {
@@ -127,11 +134,14 @@ class User
         $mysql = new MySQLConnection();
         $offset = $page * $pageLength;
 
+        //search database
         $sql = "SELECT * FROM Participants LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
 
+        //set the result to be the array
         $res = array();
 
+        //add users to the results
         while ($obj = mysqli_fetch_object($result)) {
             array_push($res, User::userFactory($obj, false));
         }
@@ -151,11 +161,14 @@ class User
         $mysql = new MySQLConnection();
         $offset = $page * $pageLength;
 
+        //search database
         $sql = "SELECT * FROM Participants WHERE MembershipStatus != 3 LIMIT $offset, $pageLength;";
         $result = mysqli_query($mysql->conn, $sql);
 
+        //set the result to an array
         $res = array();
 
+        //add nonstaff users to the array
         while ($obj = mysqli_fetch_object($result)) {
             array_push($res, User::userFactory($obj, false));
         }
@@ -172,6 +185,7 @@ class User
      */
     static function userFactory(object $input_user, bool $hasStaff): User
     {
+        //check the users membership status
         if ($input_user->MembershipStatus == MembershipStatus::STAFF && $hasStaff) {
             $user = new Staff();
             $user->fill($input_user);
@@ -179,6 +193,7 @@ class User
             $user = new User();
         }
 
+        //fill user info
         $user->id = $input_user->ID;
         $user->indexed = $input_user->indexed;
         $user->firstName = $input_user->FirstName;
@@ -197,10 +212,12 @@ class User
      */
     function makeStaff(): bool
     {
+        //create a new staff object
         $staff = new Staff();
         $staff->status = MembershipStatus::STAFF;
         $staff->id = $this->id;
 
+        //set staff accounts user status
         $staff->phoneNumber = $_POST['phone'];
         $staff->middleInit = $_POST['middle'];
         $staff->salary = $_POST['salary'];
@@ -221,13 +238,16 @@ class User
     {
         $mysql = new MySQLConnection();
 
+        //check if account is inactive
         $inactive = ($this->isInactive ? 1 : 0);
 
+        //update the account in the data base
         $sql = "UPDATE Participants SET Email = '$this->email', FirstName = '$this->firstName', 
                         LastName = '$this->lastName', inactive = $inactive, 
                         MembershipStatus = $this->status WHERE ID = $this->id";
         $result = mysqli_query($mysql->conn, $sql);
 
+        //check if it worked
         if (!$result) {
             echo mysqli_error($mysql->conn);
         }
