@@ -10,7 +10,7 @@ require_once 'Staff.php';
  */
 class User
 {
-
+    //user info
     public int $id;
     public string $email;
     public string $firstName;
@@ -20,11 +20,19 @@ class User
     public bool $isStaff;
     public bool $isInactive;
 
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
 
     }
 
+    /**
+     * disable a user
+     *
+     * @return bool return whether the user was disabled
+     */
     public function disableUser(): bool
     {
         $mysql = new MySQLConnection();
@@ -38,6 +46,12 @@ class User
         return $this->save();
     }
 
+    /**
+     * edit a user
+     *
+     * @param int $id   user id to be edited
+     * @return bool     whether the edit worked
+     */
     public static function edit(int $id): bool
     {
         $user = User::get($id);
@@ -49,6 +63,11 @@ class User
         return $user->save();
     }
 
+    /**
+     * reenable a user account
+     *
+     * @return bool returns whether the account was reenabled
+     */
     function enable(): bool
     {
         $mysql = new MySQLConnection();
@@ -57,6 +76,12 @@ class User
         return mysqli_query($mysql->conn, $sql);
     }
 
+    /**
+     * get a user object based on the user id
+     *
+     * @param int $id the id of the user to be got
+     * @return User the user object of that user
+     */
     public static function get(int $id): User
     {
         $mysql = new MySQLConnection();
@@ -68,11 +93,12 @@ class User
         return User::userFactory($obj, false);
     }
 
-    function isFree($classID)
-    {
-        // TODO: Check to see if the user is registered for another class during this time.
-    }
-
+    /**
+     * search for a user based on an associated value
+     *
+     * @param string $search_val value to be searched
+     * @return mixed|string search results
+     */
     static function search(string $search_val)
     {
         $mysql = new MySQLConnection();
@@ -89,6 +115,12 @@ class User
         }
     }
 
+    /**
+     * get a list of users
+     *
+     * @param int $page value for computing
+     * @return array the array of users
+     */
     static function getUsers(int $page = 0): array
     {
         $pageLength = 20;
@@ -107,6 +139,12 @@ class User
         return $res;
     }
 
+    /**
+     * get non staff members
+     *
+     * @param int $page value for computing
+     * @return array array of non staff users
+     */
     static function getNonStaff(int $page = 0): array
     {
         $pageLength = 20;
@@ -125,6 +163,13 @@ class User
         return $res;
     }
 
+    /**
+     * turn a user from a general object to a user object
+     *
+     * @param object $input_user the user to be converted
+     * @param bool $hasStaff whether the user is staff
+     * @return User user object
+     */
     static function userFactory(object $input_user, bool $hasStaff): User
     {
         if ($input_user->MembershipStatus == MembershipStatus::STAFF && $hasStaff) {
@@ -145,6 +190,11 @@ class User
         return $user;
     }
 
+    /**
+     * make the user a staff member
+     *
+     * @return bool whether the user is now a staff member
+     */
     function makeStaff(): bool
     {
         $staff = new Staff();
@@ -162,6 +212,11 @@ class User
         return $staff->save(Staff::exists($this->id));
     }
 
+    /**
+     * save the user
+     *
+     * @return bool whether the user was saved in the database
+     */
     function save(): bool
     {
         $mysql = new MySQLConnection();
